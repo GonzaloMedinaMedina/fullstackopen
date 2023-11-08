@@ -1,0 +1,12 @@
+sequenceDiagram
+    participant browser
+    participant server
+
+    browser click on <input type="text" name="note"> element
+    browser type in <input type="text" name="note"> element
+    browser click on <input type="submit" value="Save"> element
+
+    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/spa
+    activate server
+    server-->>browser: Send response {"message":"note created"} with status code 201 created.
+    deactivate server

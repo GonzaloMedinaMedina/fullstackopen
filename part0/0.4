@@ -10,7 +10,7 @@ sequenceDiagram
                     Body note: userTextInput  
     activate server
     create note 
-    server->browser: Send redirect to https://studies.cs.helsinki.fi/exampleapp/notes
+    server->browser: Send redirect to https://studies.cs.helsinki.fi/exampleapp/notes with 302 status code
     deactivate server
 
     browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/notes
