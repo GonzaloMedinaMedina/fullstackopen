@@ -11,12 +11,11 @@ const App = () => {
   {
     event.preventDefault();
     const newPersonObject = { name: newName, number: newPhone};
-    const newPersonStringify = JSON.stringify(newPersonObject);
     let isAddedAlready = false;
 
     persons.forEach(person => 
     {
-      if (JSON.stringify(person) === newPersonStringify)
+      if (person.name === newPersonObject.name)
       {
         alert(`${newName} is already added to phonebook`);
         isAddedAlready = true;
@@ -32,14 +31,9 @@ const App = () => {
     setPersons(copy);
   }
 
-  const handleNameChange = (event) => 
+  const handleValueChange = (event, setFunction) => 
   {
-    setNewName(event.target.value)
-  }
-
-  const handlePhoneChange = (event) => 
-  {
-    setNewPhone(event.target.value)
+    setFunction(event.target.value)
   }
 
   return (
@@ -47,10 +41,10 @@ const App = () => {
       <h2>Phonebook</h2>
       <form onSubmit={addName}>
         <div>
-          name: <input value={newName} onChange={handleNameChange}/>
+          name: <input value={newName} onChange={(e) => handleValueChange(e, setNewName)}/>
         </div>
         <div>
-          number: <input value={newPhone} onChange={handlePhoneChange}/>
+          number: <input value={newPhone} onChange={(e) => handleValueChange(e, setNewPhone)}/>
         </div>
         <div>
           <button type="submit" >add</button>
