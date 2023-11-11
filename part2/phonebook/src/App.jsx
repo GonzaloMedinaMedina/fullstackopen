@@ -9,6 +9,23 @@ const App = () => {
   const addName = (event) => 
   {
     event.preventDefault();
+    const newNameObject = { name: newName };
+    const newNameStringify = JSON.stringify(newNameObject);
+    let isAddedAlready = false;
+
+    persons.forEach(person => 
+    {
+      if (JSON.stringify(person) === newNameStringify)
+      {
+        alert(`${newName} is already added to phonebook`);
+        isAddedAlready = true;
+        return;
+      }
+    })
+
+    if(isAddedAlready)
+      return;
+
     const copy = [...persons]
     copy.push({ name: newName });
     setPersons(copy);
