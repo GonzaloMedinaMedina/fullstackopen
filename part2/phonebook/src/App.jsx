@@ -1,76 +1,8 @@
 import { useState, useEffect } from 'react'
 import personsService from './service/personsService';
-
-const FilterPerson = (props) => 
-{
-  const handleValueChange = props.handleValueChange;
-  const filterName = props.filterName;
-  const setFilterName = props.setFilterName;
-  return (
-    <div>
-      filter shown with<input value={filterName} onChange={(e) => handleValueChange(e, setFilterName)}/>
-    </div>
-  )
-}
-
-const AddNewPerson = (props) => 
-{
-  const addName = props.addName;
-  const handleValueChange = props.handleValueChange;
-  const setNewName = props.setNewName;
-  const setNewPhone = props.setNewPhone;
-  const newName = props.newName;
-  const newPhone = props.newPhone;
-
-  return (
-  <form onSubmit={addName}>
-    <div>
-      name: <input value={newName} onChange={(e) => handleValueChange(e, setNewName)}/>
-    </div>
-    <div>
-      number: <input value={newPhone} onChange={(e) => handleValueChange(e, setNewPhone)}/>
-    </div>
-    <div>
-      <button type="submit" >add</button>
-    </div>
-  </form>
-  )
-}
-
-const ListOfPerson = (props) => 
-{
-  const persons = props.persons;
-  const filterName = props.filterName;
-  const setPersons = props.setPersons;
-
-  const removePerson = (id, name) => 
-  {
-
-    if (window.confirm(`Delete ${name}`)) 
-    {
-      personsService
-      .remove(id)
-      .then(response =>
-      {
-        if (response?.status === 200)
-          setPersons(persons.filter(p => p.id !== id))
-        console.log(response)
-      })
-    }
-  }
-
-  return (
-    <>
-      {persons.filter(person => person.name.toLowerCase().includes(filterName.toLocaleLowerCase()))
-      .map(person =>       
-        <p key={person.id}>
-          {person.name} {person.number} 
-          <button onClick={() => removePerson(person.id, person.name)}>delete</button>
-        </p>
-      )}
-    </>
-  )
-}
+import AddNewPerson from './AddNewPerson';
+import FilterPerson from './FilterPerson';
+import ListOfPersons from './ListOfPersons';
 
 const App = () => 
 {
@@ -138,7 +70,7 @@ const App = () =>
         newName={newName} 
         newPhone={newPhone}/>
       <h2>Numbers</h2>
-      <ListOfPerson persons={persons} setPersons={setPersons} filterName={filterName}/>
+      <ListOfPersons persons={persons} setPersons={setPersons} filterName={filterName}/>
     </div>
   )
 }
