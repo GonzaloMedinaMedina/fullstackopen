@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import personsService from './service/personsService';
 
 const FilterPerson = (props) => 
 {
@@ -58,7 +58,7 @@ const App = () => {
 
   useEffect(() => 
   {
-    axios.get('http://localhost:3001/persons')
+    personsService.getAll()
     .then(response => 
     { 
       if(response?.status === 200 && Array.isArray(response?.data))
@@ -88,8 +88,8 @@ const App = () => {
     if(isAddedAlready)
       return;
 
-    axios
-      .post('http://localhost:3001/persons', newPersonObject) 
+    personsService
+      .create(newPersonObject)
       .then(response => {
         console.log(response)
         setPersons(persons.concat(newPersonObject));
