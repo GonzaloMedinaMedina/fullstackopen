@@ -32,10 +32,30 @@ const App = () =>
 
     persons.forEach(person => 
     {
-      if (person.name === newPersonObject.name)
+      if (newName == person.name)      
       {
-        alert(`${newName} is already added to phonebook`);
         isAddedAlready = true;
+
+        if (person.number === newPhone)
+        {
+          alert(`${newName} is already added to phonebook with number ${newPhone}`);
+        }
+        else if (window.confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`))
+        {
+          personsService
+            .update(person.id, newPersonObject)
+            .then(response =>
+            {
+              if (response.status === 200)
+              {
+                const copy = [...persons];
+                const index = copy.indexOf(copy.find(p => p.name === newName));
+                copy[index] = response.data;
+
+                setPersons(copy);
+              }              
+            })
+        }
         return;
       }
     })
