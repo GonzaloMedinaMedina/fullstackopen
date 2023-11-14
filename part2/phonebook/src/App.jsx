@@ -41,16 +41,39 @@ const ListOfPerson = (props) =>
 {
   const persons = props.persons;
   const filterName = props.filterName;
+  const setPersons = props.setPersons;
+
+  const removePerson = (id, name) => 
+  {
+
+    if (window.confirm(`Delete ${name}`)) 
+    {
+      personsService
+      .remove(id)
+      .then(response =>
+      {
+        if (response?.status === 200)
+          setPersons(persons.filter(p => p.id !== id))
+        console.log(response)
+      })
+    }
+  }
 
   return (
     <>
       {persons.filter(person => person.name.toLowerCase().includes(filterName.toLocaleLowerCase()))
-      .map(person => <p key={person.name}>{person.name} {person.number}</p>)}
+      .map(person =>       
+        <p key={person.id}>
+          {person.name} {person.number} 
+          <button onClick={() => removePerson(person.id, person.name)}>delete</button>
+        </p>
+      )}
     </>
   )
 }
 
-const App = () => {
+const App = () => 
+{
   const [persons, setPersons] = useState([])
   const [filterName, setFilterName] = useState('')
   const [newName, setNewName] = useState('')
@@ -115,7 +138,7 @@ const App = () => {
         newName={newName} 
         newPhone={newPhone}/>
       <h2>Numbers</h2>
-      <ListOfPerson persons={persons} filterName={filterName}/>
+      <ListOfPerson persons={persons} setPersons={setPersons} filterName={filterName}/>
     </div>
   )
 }
