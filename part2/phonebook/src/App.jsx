@@ -88,9 +88,14 @@ const App = () => {
     if(isAddedAlready)
       return;
 
-    const copy = [...persons]
-    copy.push(newPersonObject);
-    setPersons(copy);
+    axios
+      .post('http://localhost:3001/persons', newPersonObject) 
+      .then(response => {
+        console.log(response)
+        setPersons(persons.concat(newPersonObject));
+        setNewName('');
+        setNewPhone('');
+      })
   }
 
   const handleValueChange = (event, setFunction) => 
