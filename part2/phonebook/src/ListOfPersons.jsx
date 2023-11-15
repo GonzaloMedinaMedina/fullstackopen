@@ -5,10 +5,10 @@ const ListOfPersons = (props) =>
   const filterName = props.filterName;
   const setPersons = props.setPersons;
   const persons = props.persons.filter(person => person.name.toLowerCase().includes(filterName.toLocaleLowerCase()));
+  const showMessage = props.showMessage;
 
   const removePerson = (id, name) => 
   {
-
     if (window.confirm(`Delete ${name} ?`)) 
     {
       personsService
@@ -16,9 +16,17 @@ const ListOfPersons = (props) =>
       .then(response =>
       {
         if (response?.status === 200)
+        {
           setPersons(persons.filter(p => p.id !== id))
-        console.log(response)
+        }
       })
+      .catch(error =>
+        {
+          if(error.response.status === 404 )
+          {
+            showMessage(`Information of ${name} has already been removed from the server.`, false);
+          }
+        })
     }
   }
 

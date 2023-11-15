@@ -5,12 +5,15 @@ import FilterPerson from './FilterPerson';
 import ListOfPersons from './ListOfPersons';
 import './App.css'
 
-const Notification = ({message}) =>
+const Notification = ({messageObject}) =>
 {
-  if (message === null)
+  if (messageObject === null || messageObject === undefined)
     return null;
 
-  return <div className='success-message'>{message}</div>
+  const messageType = messageObject?.success ? 'success' : 'error'
+  const message = messageObject.message;
+
+  return <div className={messageType + ' message'}>{message}</div>
 }
 
 const App = () => 
@@ -19,7 +22,7 @@ const App = () =>
   const [filterName, setFilterName] = useState('')
   const [newName, setNewName] = useState('')
   const [newPhone, setNewPhone] = useState('')
-  const [message, setMessage] = useState('')
+  const [message, setMessage] = useState(null)
 
   useEffect(() => 
   {
@@ -34,9 +37,15 @@ const App = () =>
   }, 
   [])
 
-  const showMessage = (message, time = 5000) => 
+  const showMessage = (message, success = true, time = 5000) => 
   {
-    setMessage(message);
+    const messageObject =
+    {
+      message: message,
+      success: success
+    }
+
+    setMessage(messageObject);
     setTimeout(() => {
       setMessage(null)
     }, time)
@@ -101,7 +110,7 @@ const App = () =>
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={message}/>
+      <Notification messageObject={message}/>
       <FilterPerson handleValueChange={handleValueChange} filterName={filterName} setFilterName={setFilterName}/>
       <h2>Add a new</h2>
       <AddNewPerson addName={addName} 
@@ -111,7 +120,7 @@ const App = () =>
         newName={newName} 
         newPhone={newPhone}/>
       <h2>Numbers</h2>
-      <ListOfPersons persons={persons} setPersons={setPersons} filterName={filterName}/>
+      <ListOfPersons persons={persons} setPersons={setPersons} filterName={filterName} showMessage={showMessage}/>
     </div>
   )
 }
