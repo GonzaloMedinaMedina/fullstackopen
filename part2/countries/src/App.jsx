@@ -31,7 +31,7 @@ const CountrySummary = (props) =>
   return (
     <div>
       <h1>{name}</h1>
-      {capital.map(c => <p style={style}>capital {c}</p>)}
+      {capital.map(c => <p style={style} key={c}>capital {c}</p>)}
       <p style={style}>area {area}</p>
       <p><b>languages:</b></p>
       <ul>
@@ -45,6 +45,7 @@ const CountrySummary = (props) =>
 const CountrySection = (props) =>
 {
   const countries = props.countries;
+  const setCountries = props.setCountries;
 
   if (countries === null)
   {
@@ -52,7 +53,7 @@ const CountrySection = (props) =>
   }
   else if (countries.length > 1)
   {
-    return countries.map(c => <div>{c.name.common}</div>)
+    return countries.map(c => <div key={c.name.common}>{c.name.common} <button onClick={() => {setCountries([c])}}>show</button></div>)
   }
   else if (countries.length === 1)
   {
@@ -96,7 +97,7 @@ function App()
   return (
     <>
     <FilterCounty handleValueChange={handleValueChange} filterCountry={filterCountry} setFilterCountry={setFilterCountry}/>
-    <CountrySection countries={countries}/>
+    <CountrySection countries={countries} setCountries={setCountries}/>
     </>
   )
   
