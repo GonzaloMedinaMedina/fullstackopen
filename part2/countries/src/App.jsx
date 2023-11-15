@@ -14,11 +14,35 @@ const FilterCounty = (props) =>
   )
 }
 
+const CityWeather = (props) =>
+{
+  const weather = props.weather;
+
+  if (weather === null)
+    return null;
+
+  const cityName = weather.name;
+  const temp = weather.main.temp;
+  const icon = weather.weather[0].icon;
+  const windSpeed = weather.wind.speed;
+
+    return (
+    <>
+      <h1>Weather in {cityName}</h1>
+      <p>temperature {temp} Celsius</p>
+      <img src={`https://openweathermap.org/img/wn/${icon}@2x.png`} alt=""/>
+      <p>wind {windSpeed} m/s</p>
+    </>
+    )
+}
+
 const CountrySummary = (props) =>
 {
+  const [weather, setWeather] = useState(null);
+
   const country = props.country;
   const name = country.name.common;
-  const capital = country.capital;
+  const capital = country.capital[0];
   const area = country.area;
   const languages = country.languages;
   const flag = country.flags.png;
@@ -28,16 +52,29 @@ const CountrySummary = (props) =>
     margin: 0
   }
 
+  useEffect(() => 
+  {
+    const api_key = import.meta.env.VITE_SOME_KEY
+    axios
+    .get(`https://api.openweathermap.org/data/2.5/weather?q=${capital}&appid=${api_key}&units=metric`)
+    .then(response => 
+      {
+        setWeather(response.data)
+      })
+  }, 
+  [])
+
   return (
     <div>
       <h1>{name}</h1>
-      {capital.map(c => <p style={style} key={c}>capital {c}</p>)}
+      <p style={style} key={capital}>capital {capital}</p>
       <p style={style}>area {area}</p>
       <p><b>languages:</b></p>
       <ul>
         {Object.values(languages).map(l => <li key={l}>{l}</li>)}
       </ul>
       <img src={flag} alt="flag"></img>
+      <CityWeather weather={weather}/>
     </div>
   )
 }
