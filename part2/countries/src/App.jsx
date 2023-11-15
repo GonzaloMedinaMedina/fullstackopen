@@ -14,6 +14,52 @@ const FilterCounty = (props) =>
   )
 }
 
+const CountrySummary = (props) =>
+{
+  const country = props.country;
+  const name = country.name.common;
+  const capital = country.capital;
+  const area = country.area;
+  const languages = country.languages;
+  const flag = country.flags.png;
+
+  const style =
+  {
+    margin: 0
+  }
+
+  return (
+    <div>
+      <h1>{name}</h1>
+      {capital.map(c => <p style={style}>capital {c}</p>)}
+      <p style={style}>area {area}</p>
+      <p><b>languages:</b></p>
+      <ul>
+        {Object.values(languages).map(l => <li key={l}>{l}</li>)}
+      </ul>
+      <img src={flag} alt="flag"></img>
+    </div>
+  )
+}
+
+const CountrySection = (props) =>
+{
+  const countries = props.countries;
+
+  if (countries === null)
+  {
+    return <p>Too many matches, specify another filter</p>
+  }
+  else if (countries.length > 1)
+  {
+    return countries.map(c => <div>{c.name.common}</div>)
+  }
+  else if (countries.length === 1)
+  {
+    return <CountrySummary country={countries[0]}/>
+  }  
+}
+
 function App() 
 {
   const [filterCountry, setFilterCountry] = useState('')
@@ -27,7 +73,8 @@ function App()
       {
         if(response.status === 200)
         {
-          const filteredCountries = response.data.filter(c => c.name.common.toLowerCase().includes(filterCountry));
+          const lowerCaseSearch = filterCountry.toLowerCase();
+          const filteredCountries = response.data.filter(c => c.name.common.toLowerCase().includes(lowerCaseSearch));
           if (filteredCountries.length < 10)
           {
             setCountries(filteredCountries);
@@ -49,7 +96,7 @@ function App()
   return (
     <>
     <FilterCounty handleValueChange={handleValueChange} filterCountry={filterCountry} setFilterCountry={setFilterCountry}/>
-    {countries === null ? <p>Too many matches, specify another filter</p> : countries.map(c => <div>{c.name.common}</div>)}
+    <CountrySection countries={countries}/>
     </>
   )
   
