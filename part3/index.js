@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+var morgan = require('morgan')
 
 let persons = [
   { 
@@ -29,6 +30,23 @@ const generateId = () => {
 }
 
 app.use(express.json())
+
+const morganFn = morgan(function (tokens, req, res) {
+  const requestType = tokens.method(req, res),
+  body = requestType === 'POST' ? JSON.stringify(req.body) : '';
+  
+tokens.body
+  return [
+    requestType,
+    tokens.url(req, res),
+    tokens.status(req, res),
+    tokens.res(req, res, 'content-length'), '-',
+    tokens['response-time'](req, res), 'ms',
+    body
+  ].join(' ')
+})
+
+app.use(morganFn)
 
 app.get('/info', (request, response) => {
     const numberOfPeople = persons.length;
