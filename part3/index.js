@@ -30,8 +30,6 @@ const generateId = () => {
   return Math.floor(Math.random() * 1000);
 }
 
-app.use(express.json())
-
 const morganFn = morgan(function (tokens, req, res) {
   const requestType = tokens.method(req, res),
   body = requestType === 'POST' ? JSON.stringify(req.body) : '';
@@ -48,6 +46,7 @@ tokens.body
 })
 
 app.use(cors())
+app.use(express.json())
 app.use(morganFn)
 
 app.get('/info', (request, response) => {
@@ -123,7 +122,7 @@ app.delete('/api/persons/:id', (request, response) => {
   response.status(204).end()
 })
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
