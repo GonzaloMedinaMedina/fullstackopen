@@ -55,51 +55,44 @@ const App = () =>
   {
     event.preventDefault();
     const newPersonObject = { name: newName, number: newPhone};
-    let isAddedAlready = false;
+    const repeatedPerson = persons.find(person => person.name === newName);
 
-    persons.forEach(person => 
+    if (repeatedPerson)
     {
-      if (newName == person.name)      
+      if (repeatedPerson.number === newPhone)
       {
-        isAddedAlready = true;
-
-        if (person.number === newPhone)
-        {
-          alert(`${newName} is already added to phonebook with number ${newPhone}`);
-        }
-        else if (window.confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`))
-        {
-          personsService
-            .update(person.id, newPersonObject)
-            .then(response =>
-            {
-              if (response.status === 200)
-              {
-                const copy = [...persons];
-                const index = copy.indexOf(copy.find(p => p.name === newName));
-                copy[index] = response.data;
-
-                setPersons(copy);
-                showMessage(`Changed phone number for ${newName} contact.`);
-              }              
-            })
-        }
-        return;
+        alert(`${newName} is already added to phonebook with number ${newPhone}`);
       }
-    })
+      else if (window.confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`))
+      {
+        personsService
+          .update(repeatedPerson.id, newPersonObject)
+          .then(response =>
+          {
+            if (response.status === 200)
+            {
+              const copy = [...persons];
+              const index = copy.indexOf(copy.find(p => p.name === newName));
+              copy[index] = response.data;
 
-    if(isAddedAlready)
-      return;
-
-    personsService
-      .create(newPersonObject)
-      .then(response => {
-        console.log(response)
-        setPersons(persons.concat(newPersonObject));
-        setNewName('');
-        setNewPhone('');
-        showMessage(`Added ${newName}`)
-      })
+              setPersons(copy);
+              showMessage(`Changed phone number for ${newName} contact.`);
+            }              
+          })
+      }
+    }
+    else
+    {
+      personsService
+        .create(newPersonObject)
+        .then(response => {
+          console.log(response)
+          setPersons(persons.concat(newPersonObject));
+          setNewName('');
+          setNewPhone('');
+          showMessage(`Added ${newName}`)
+        })
+    }
   }
 
   const handleValueChange = (event, setFunction) => 
