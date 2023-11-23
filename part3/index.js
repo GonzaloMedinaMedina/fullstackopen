@@ -48,6 +48,7 @@ tokens.body
 app.use(cors())
 app.use(express.json())
 app.use(morganFn)
+app.use(express.static('dist'))
 
 app.get('/info', (request, response) => {
     const numberOfPeople = persons.length;
