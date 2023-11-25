@@ -1,4 +1,4 @@
-import mongoose from "mongoose"
+const mongoose = require('mongoose')
 
 if (process.argv.length<3) 
 {
@@ -21,6 +21,7 @@ const Person = new mongoose.Schema({
   name: String,
   number: String,
 })
+
 const PersonModel = mongoose.model('Person', Person)
 
 if (newName === undefined && newPhone === undefined)
