@@ -5,33 +5,6 @@ var morgan = require('morgan')
 const cors = require('cors')
 const Person = require('./models/persons');
 
-let persons = [
-  { 
-    "id": 1,
-    "name": "Arto Hellas", 
-    "number": "040-123456"
-  },
-  { 
-    "id": 2,
-    "name": "Ada Lovelace", 
-    "number": "39-44-5323523"
-  },
-  { 
-    "id": 3,
-    "name": "Dan Abramov", 
-    "number": "12-43-234345"
-  },
-  { 
-    "id": 4,
-    "name": "Mary Poppendieck", 
-    "number": "39-23-6423122"
-  }
-]
-
-const generateId = () => {
-  return Math.floor(Math.random() * 1000);
-}
-
 const morganFn = morgan(function (tokens, req, res) {
   const requestType = tokens.method(req, res),
   body = requestType === 'POST' ? JSON.stringify(req.body) : '';
@@ -53,7 +26,7 @@ app.use(morganFn)
 app.use(express.static('dist'))
 
 app.get('/info', (request, response) => {
-  Persons.find({}).then(persons => 
+  Person.find({}).then(persons => 
     {
       const dateStamp = new Date();
       response.send(`<p>Phonebook has info for ${persons.length} people</p><p>${dateStamp}</p>`)
@@ -62,15 +35,14 @@ app.get('/info', (request, response) => {
   
 app.get('/api/persons', (request, response) => {
   Person.find({}).then(persons => {
-    console.log(persons);
     response.json(persons)
   })
 })
 
 app.get('/api/persons/:id', (request, response) => {
-    Person.findById(request.params.id)
-      .then(person => response.json(person))
-      .catch(response.status(404).end())
+  Person.findById(request.params.id).then(person => {
+    response.json(person) 
+  })
 })
 
 app.post('/api/persons', (request, response) => {
