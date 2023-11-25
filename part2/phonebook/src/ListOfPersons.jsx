@@ -15,7 +15,7 @@ const ListOfPersons = (props) =>
       .remove(id)
       .then(response =>
       {
-        if (response?.status === 200)
+        if (response?.status === 204)
         {
           setPersons(persons.filter(p => p.id !== id))
         }
