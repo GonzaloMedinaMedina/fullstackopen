@@ -3,6 +3,7 @@ const express = require('express')
 const app = express()
 var morgan = require('morgan')
 const cors = require('cors')
+const Person = require('./models/persons');
 
 let persons = [
   { 
@@ -52,27 +53,24 @@ app.use(morganFn)
 app.use(express.static('dist'))
 
 app.get('/info', (request, response) => {
-    const numberOfPeople = persons.length;
-    const dateStamp = new Date();
-    response.send(`<p>Phonebook has info for ${numberOfPeople} people</p><p>${dateStamp}</p>`)
+  Persons.find({}).then(persons => 
+    {
+      const dateStamp = new Date();
+      response.send(`<p>Phonebook has info for ${persons.length} people</p><p>${dateStamp}</p>`)
+    });
 })
   
 app.get('/api/persons', (request, response) => {
-  response.json(persons)
+  Person.find({}).then(persons => {
+    console.log(persons);
+    response.json(persons)
+  })
 })
 
 app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    const person = persons.find(person => person.id === id)
-
-    if (person)
-    {
-      response.json(person);
-    }
-    else
-    {
-      response.status(404).end();
-    }
+    Person.findById(request.params.id)
+      .then(person => response.json(person))
+      .catch(response.status(404).end())
 })
 
 app.post('/api/persons', (request, response) => {
