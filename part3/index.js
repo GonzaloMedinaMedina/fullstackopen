@@ -60,10 +60,10 @@ app.post('/api/persons', (request, response) => {
   }
   else
   {
-      const person = new Person({
-        name: body.name,
-        number: body.number
-      })
+    const person = new Person({
+      name: body.name,
+      number: body.number
+    })
 
     person.save()
       .then(savedPerson => response.json(savedPerson)) 
@@ -76,6 +76,12 @@ app.delete('/api/persons/:id', (request, response) => {
     .then(result => response.status(204).end())
     .catch(error => next(error))
 })
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.use(unknownEndpoint)
 
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
