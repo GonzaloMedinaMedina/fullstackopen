@@ -77,7 +77,7 @@ const App = () =>
 
               setPersons(copy);
               showMessage(`Changed phone number for ${newName} contact.`);
-            }              
+            }            
           })
       }
     }
@@ -86,7 +86,6 @@ const App = () =>
       personsService
         .create(newPersonObject)
         .then(response => {
-          console.log(response)
           setPersons(persons.concat(newPersonObject));
           setNewName('');
           setNewPhone('');
