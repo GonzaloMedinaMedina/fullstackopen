@@ -65,9 +65,19 @@ app.post('/api/persons', (request, response, next) => {
       number: body.number
     })
 
-    person.save()
-      .then(savedPerson => response.json(savedPerson)) 
-      .catch(error => next(error))
+    !Person.findOne({name: person.name}).then((result) =>
+    {
+      if (result === null)
+      {
+        person.save()
+          .then(savedPerson => response.json(savedPerson)) 
+          .catch(error => next(error))
+      }
+      else
+      {
+        return response.status(400).json({ error: `${person.name} is already included in the phonebook.` });
+      }
+    })
   }
 })
 
@@ -87,7 +97,7 @@ app.put('/api/persons/:id', (request, response, next) =>
 
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndDelete(request.params.id)
-    .then(result => response.status(204).end())
+    .then(result => response.status(result === null ? 404 : 204).end())
     .catch(error => next(error))
 })
 
