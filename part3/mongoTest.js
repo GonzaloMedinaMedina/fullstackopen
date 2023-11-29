@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-if (process.argv.length<3) 
+if (process.argv.length<3)
 {
   console.log('give password as argument')
   process.exit(1)
@@ -13,7 +13,7 @@ const newPhone = process.argv[4]
 const url = `mongodb+srv://gonzalomedinamedina:${password}@phonebook.6zqewjh.mongodb.net/?retryWrites=true&w=majority`
 
 mongoose.set('strictQuery',false)
-mongoose.connect(url, {dbName: 'phonebook'})
+mongoose.connect(url, { dbName: 'phonebook' })
 
 
 //Schema for contact person
@@ -26,17 +26,18 @@ const PersonModel = mongoose.model('Person', Person)
 
 if (newName === undefined && newPhone === undefined)
 {
-  PersonModel.find({}).then(result => 
+  PersonModel.find({}).then(result =>
   {
     if (result.errors === undefined)
     {
       console.log('phonebook:')
-      result.forEach(person => 
+      result.forEach(person =>
       {
         console.log(`${person.name} ${person.number}`)
       })
     }
-  mongoose.connection.close()
+
+    mongoose.connection.close()
   })
 }
 else

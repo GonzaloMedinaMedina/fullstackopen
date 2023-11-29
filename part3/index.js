@@ -2,7 +2,7 @@ require('dotenv').config()
 const express = require('express')
 const app = express()
 const cors = require('cors')
-const Person = require('./models/persons');
+const Person = require('./models/persons')
 
 const requestLogger = (request, response, next) => {
   console.log('Method:', request.method)
@@ -18,14 +18,14 @@ app.use(requestLogger)
 app.use(express.static('dist'))
 
 app.get('/info', (request, response, next) => {
-  Person.find({}).then(persons => 
-    {
-      const dateStamp = new Date();
-      response.send(`<p>Phonebook has info for ${persons.length} people</p><p>${dateStamp}</p>`)
-    })
+  Person.find({}).then(persons =>
+  {
+    const dateStamp = new Date()
+    response.send(`<p>Phonebook has info for ${persons.length} people</p><p>${dateStamp}</p>`)
+  })
     .catch(error => next(error))
 })
-  
+
 app.get('/api/persons', (request, response, next) => {
   Person.find({})
     .then(persons => response.json(persons))
@@ -34,14 +34,14 @@ app.get('/api/persons', (request, response, next) => {
 
 app.get('/api/persons/:id', (request, response, next) => {
   Person.findById(request.params.id).then(person => {
-    response.json(person) 
+    response.json(person)
   })
-  .catch(error => next(error))
+    .catch(error => next(error))
 })
 
 app.post('/api/persons', (request, response, next) => {
   const body = request.body
-  let errorString = '';
+  let errorString = ''
 
   if (!body.name)
   {
@@ -54,8 +54,8 @@ app.post('/api/persons', (request, response, next) => {
 
   if (errorString !== '')
   {
-    return response.status(400).json({ 
-      error: errorString 
+    return response.status(400).json({
+      error: errorString
     })
   }
   else
@@ -65,25 +65,25 @@ app.post('/api/persons', (request, response, next) => {
       number: body.number
     })
 
-    !Person.findOne({name: person.name}).then((result) =>
+    !Person.findOne({ name: person.name }).then((result) =>
     {
       if (result === null)
       {
         person.save()
-          .then(savedPerson => response.json(savedPerson)) 
+          .then(savedPerson => response.json(savedPerson))
           .catch(error => next(error))
       }
       else
       {
-        return response.status(400).json({ error: `${person.name} is already included in the phonebook.` });
+        return response.status(400).json({ error: `${person.name} is already included in the phonebook.` })
       }
     })
   }
 })
 
-app.put('/api/persons/:id', (request, response, next) => 
+app.put('/api/persons/:id', (request, response, next) =>
 {
-  const body = request.body;
+  const body = request.body
 
   const person = {
     name: body.name,
@@ -92,7 +92,7 @@ app.put('/api/persons/:id', (request, response, next) =>
 
   Person.findByIdAndUpdate(request.params.id, person, { new: true, runValidators: true, context: 'query' })
     .then(updatedPerson => response.json(updatedPerson))
-    .catch(error => next(error))  
+    .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
@@ -110,10 +110,10 @@ app.use(unknownEndpoint)
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
 
-  if (error.name === 'CastError') 
+  if (error.name === 'CastError')
   {
     return response.status(400).send({ error: 'malformatted id' })
-  } 
+  }
   else if (error.name === 'ValidationError')
   {
     return response.status(400).json({ error: error.message })
@@ -126,5 +126,5 @@ app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
+  console.log(`Server running on port ${PORT}`)
 })
