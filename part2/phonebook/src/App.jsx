@@ -92,6 +92,10 @@ const App = () =>
           setNewPhone('');
           showMessage(`Added ${newName}`)
         })
+        .catch(error => 
+        {
+          showMessage(error.response.data.error, false)
+        })
     }
   }
 
