@@ -119,3 +119,55 @@ describe('favoriteBlog', () => {
         expect(result).toEqual(null);
     })
 })
+
+describe('mostBlogs', () => {
+    test('when list has more than one blog, return the author with more blogs', () => {
+        const expected = {
+            author: "Robert C. Martin",
+            blogs: 3
+        }
+        const result = listHelper.mostBlogs(blogs);
+        expect(result).toEqual(expected);
+    })
+
+    test('when list is null, return null', () => {
+        const result = listHelper.mostBlogs(null);
+        expect(result).toEqual(null);
+    })
+
+    test('when list is empty, return null', () => {
+        const result = listHelper.mostBlogs([]);
+        expect(result).toEqual(null);
+    })
+
+    test('when list is undefined, return null', () => {
+        const result = listHelper.mostBlogs(undefined);
+        expect(result).toEqual(null);
+    })
+})
+
+describe('mostLikes', () => {
+    test('when list has more than one blog, return the author with more likes', () => {
+        const expected = {
+            author: "Edsger W. Dijkstra",
+            likes: 17
+          }
+        const result = listHelper.mostLikes(blogs);
+        expect(result).toEqual(expected);
+    })
+
+    test('when list is null, return null', () => {
+        const result = listHelper.mostLikes(null);
+        expect(result).toEqual(null);
+    })
+
+    test('when list is empty, return null', () => {
+        const result = listHelper.mostLikes([]);
+        expect(result).toEqual(null);
+    })
+
+    test('when list is undefined, return null', () => {
+        const result = listHelper.mostLikes(undefined);
+        expect(result).toEqual(null);
+    })
+})
