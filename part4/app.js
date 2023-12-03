@@ -11,12 +11,12 @@ const url = process.env.MONGODB_URI
 logger.info('connecting to', url)
 
 mongoose.connect(url, { dbName: 'phonebook' })
-  .then(() =>
-    logger.info('connected to MongoDB')
-  )
-  .catch((error) => {
-    logger.error('error connecting to MongoDB:', error.message)
-  })
+	.then(() =>
+		logger.info('connected to MongoDB')
+	)
+	.catch((error) => {
+		logger.error('error connecting to MongoDB:', error.message)
+	})
 
 app.use(cors())
 app.use(express.json())
