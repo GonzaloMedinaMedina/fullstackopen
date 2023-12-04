@@ -1,13 +1,14 @@
 require('dotenv').config()
 const express = require('express')
+require('express-async-errors')
 const app = express()
 const cors = require('cors')
 const mongoose = require('mongoose')
 const blogsRouter = require('./controllers/blogs')
 const middleware = require('./utils/middleware')
 const logger = require('./utils/logger')
+const url = require('./utils/config').MONGODB_URI
 
-const url = process.env.MONGODB_URI
 logger.info('connecting to', url)
 
 mongoose.connect(url, { dbName: 'phonebook' })
