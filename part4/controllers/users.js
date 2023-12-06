@@ -12,6 +12,9 @@ usersRouter.get('/', async (request, response) => {
 usersRouter.post('/', async (request, response) => {
   const { username, name, password } = request.body
 
+  if (!(typeof password === 'string') || password.length < 3)
+    return response.status(400).json({ error: 'malformatted password. It must be a string of 3 character minimum size' })
+
   const saltRounds = 10
   const passwordHash = await bcrypt.hash(password, saltRounds)
 
