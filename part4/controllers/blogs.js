@@ -1,5 +1,6 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blogs')
+const middleware = require('../utils/middleware')
 
 blogsRouter.get('/', async (request, response, next) => {
 	const blogs = await Blog
@@ -13,7 +14,7 @@ blogsRouter.get('/:id', async (request, response, next) => {
 	response.json(blog);
 })
   
-blogsRouter.post('/', async (request, response, next) => {
+blogsRouter.post('/', middleware.userExtractor, async (request, response, next) => {
 	const body = request.body
 	const user = request.user;
 
@@ -31,7 +32,7 @@ blogsRouter.post('/', async (request, response, next) => {
 	response.status(201).json(savedBlog)
 })
 
-blogsRouter.delete('/:id', async (request, response, next) => {
+blogsRouter.delete('/:id', middleware.userExtractor, async (request, response, next) => {
 	const userFromRequest = request.user
 	const blogToDelete = await Blog.findById(request.params.id)
 
@@ -48,18 +49,28 @@ blogsRouter.delete('/:id', async (request, response, next) => {
 	return response.status(400).json({error: 'Request\'s user is not the owner of the blog to delete.'})
 })
 
-blogsRouter.put('/:id', async (request, response, next) => {
+blogsRouter.put('/:id', middleware.userExtractor, async (request, response, next) => {
 	const body = request.body
+	const userFromRequest = request.user
+	const blogToUpdate = await Blog.findById(request.params.id)
 
-	const blog = {
-		title: body.title,
-		author: body.author,
-		url: body.url,
-		likes: body.likes
+	if (blogToUpdate === null)
+	{
+		return response.status(404).json({error: 'Request\'s blog to update not found.'})
 	}
+	else if (blogToUpdate.user.toString() === userFromRequest.id)
+	{
+		const blog = {
+			title: body.title,
+			author: body.author,
+			url: body.url,
+			likes: body.likes,
+			user: userFromRequest.id
+		}
 
-	const result = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true, runValidators: true, context: 'query' })
-	response.status(result === null ? 404 : 204).end()	
+		const result = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true, runValidators: true, context: 'query' })
+		response.status(result === null ? 404 : 204).end()	
+	}
 })
 
 module.exports = blogsRouter

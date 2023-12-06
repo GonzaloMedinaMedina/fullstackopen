@@ -1,5 +1,3 @@
-const bcrypt = require('bcrypt')
-const User = require('../models/user')
 const mongoose = require('mongoose')
 mongoose.set("bufferTimeoutMS", 30000)
 const supertest = require('supertest')
@@ -10,23 +8,10 @@ const helper = require('./test_helper')
 
 const api = supertest(app)
 
-app.listen(config.PORT, () => {
-  logger.info(`Server running on port ${config.PORT}`)
-  logger.info(`Server uri ${config.MONGODB_URI}`)
-})
-
-
 describe('when there is initially one user in db', () => {
   beforeEach(async () => {
-    await User.deleteMany({})
-
-    const passwordHash = await bcrypt.hash('sekret', 10)
-    const user = new User({ username: 'root', passwordHash })
-    const user2 = new User({ username: 'root2', passwordHash })
-
-    await user.save()
-    await user2.save()
-  }, 100000)
+    await helper.createUsers()
+  }, 300000)
 
   test('creation succeeds with a fresh username', async () => {
     const usersAtStart = await helper.usersInDb()
@@ -142,4 +127,8 @@ describe('when there is initially one user in db', () => {
 
     expect(result.body.length).toBe(2)
   })
+})
+
+afterAll(async () => {
+  await mongoose.connection.close()
 })

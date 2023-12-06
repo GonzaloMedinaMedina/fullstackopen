@@ -7,26 +7,42 @@ const app = require('../app')
 const helper = require('./test_helper')
 
 const api = supertest(app)
-
-app.listen(config.PORT, () => {
-  logger.info(`Server running on port ${config.PORT}`)
-  logger.info(`Server uri ${config.MONGODB_URI}`)
-})
-
 const Blog = require('../models/blogs')
 
 beforeEach(async () => {
+  const users = await helper.createUsers()
   await Blog.deleteMany({})
   console.log('cleared')
 
   for (let blog of helper.initialBlogs)
   {
-    let blogObject = new Blog(blog)
+    let blogObject = new Blog({
+      title: blog.title,
+      author: blog.author,
+      url: blog.url,
+      likes: blog.likes === undefined ? 0 : blog.likes,
+      user: users[0].id
+    })
     await blogObject.save()
   }
 
 }, 300000)
 
+const loginAndGetToken = async (username = 'root', password = 'sekret') => 
+{
+  const loginBody = 
+  {
+    username: username,
+    password: password
+  }
+
+  const loginResult = await api
+    .post(`/api/login/`)
+    .send(loginBody)
+    .expect(200)
+  
+  return `Bearer ${loginResult.body.token}`
+}
 
 describe('Check retrieved blogs', () => {
   test('blogs are returned as json', async () => {
@@ -57,7 +73,11 @@ describe('Check retrieved blogs', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/)
 
-    expect(resultBlog.body).toEqual(blogToView)
+    expect(resultBlog.body.title).toBe(blogToView.title)
+    expect(resultBlog.body.author).toBe(blogToView.author)
+    expect(resultBlog.body.url).toBe(blogToView.url)
+    expect(resultBlog.body.likes).toBe(blogToView.likes)
+    expect(resultBlog.body.user).toBe(blogToView.user.toString())
     expect(resultBlog.body.id).toBeDefined()
   }, 100000)
 })
@@ -71,9 +91,12 @@ describe('Adding new blog', () => {
       likes: 20
     }
 
+    const token = await loginAndGetToken()
+
     await api
       .post('/api/blogs')
       .send(newBlog)
+      .set({ Authorization: token })
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
@@ -92,9 +115,12 @@ describe('Adding new blog', () => {
       url: 'new url'
     }
 
+    const token = await loginAndGetToken()
+
     await api
       .post('/api/blogs')
       .send(newBlog)
+      .set({ Authorization: token })
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
@@ -114,8 +140,11 @@ describe('Adding new blog', () => {
       likes: 1
     }
 
+    const token = await loginAndGetToken()
+
     await api
       .post('/api/blogs')
+      .set({ Authorization: token })
       .send(newBlog)
       .expect(400)
 
@@ -130,9 +159,12 @@ describe('Adding new blog', () => {
       likes: 20
     }
 
+    const token = await loginAndGetToken()
+
     await api
       .post('/api/blogs')
       .send(newBlog)
+      .set({ Authorization: token })
       .expect(400)
       .expect('Content-Type', /application\/json/)
 
@@ -147,9 +179,12 @@ describe('Adding new blog', () => {
       likes: 20
     }
 
+    const token = await loginAndGetToken()
+
     await api
       .post('/api/blogs')
       .send(newBlog)
+      .set({ Authorization: token })
       .expect(201)
 
     const blogsAtEnd = await helper.blogsInDb();
@@ -159,6 +194,20 @@ describe('Adding new blog', () => {
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
     expect(addedBlog).toBeDefined();
   }, 100000)
+
+  test('return error if no token is provided', async () => {
+    const newBlog = {
+      title: 'New title',
+      author: 'New author',
+      url: 'new url',
+      likes: 20
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(401)
+  })
 })
 
 describe('Delete blog', () => {
@@ -166,8 +215,11 @@ describe('Delete blog', () => {
     const blogsBefore = await helper.blogsInDb()
     const blogToDelete = blogsBefore[0]
 
+    const token = await loginAndGetToken()
+
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
+      .set({ Authorization: token })
       .expect(204)
 
     const blogsAfter = await helper.blogsInDb()
@@ -186,13 +238,17 @@ describe('Update blog', () => {
     const blogToUpdate = blogs[0]
     blogToUpdate.likes = 10;
 
+    const token = await loginAndGetToken()
+
     await api
       .put(`/api/blogs/${blogToUpdate.id}`)
+      .set({ Authorization: token })
       .send(blogToUpdate)
       .expect(204)
     
     const updatedBlog = await api
-      .get(`/api/blogs/${blogToUpdate.id}`)
+      .get(`/api/blogs/${blogToUpdate.id}`)      
+      .set({ Authorization: token })
       .expect(200)
       .expect('Content-Type', /application\/json/)
 
