@@ -1,134 +1,134 @@
-const mongoose = require('mongoose')
-mongoose.set("bufferTimeoutMS", 30000)
-const supertest = require('supertest')
-const config = require('../utils/config')
-const logger = require('../utils/logger')
-const app = require('../app')
-const helper = require('./test_helper')
+const mongoose = require('mongoose');
+mongoose.set('bufferTimeoutMS', 30000);
+const supertest = require('supertest');
+const config = require('../utils/config');
+const logger = require('../utils/logger');
+const app = require('../app');
+const helper = require('./test_helper');
 
-const api = supertest(app)
+const api = supertest(app);
 
 describe('when there is initially one user in db', () => {
-  beforeEach(async () => {
-    await helper.createUsers()
-  }, 300000)
+	beforeEach(async () => {
+		await helper.createUsers();
+	}, 300000);
 
-  test('creation succeeds with a fresh username', async () => {
-    const usersAtStart = await helper.usersInDb()
+	test('creation succeeds with a fresh username', async () => {
+		const usersAtStart = await helper.usersInDb();
 
-    const newUser = {
-      username: 'mluukkai',
-      name: 'Matti Luukkainen',
-      password: 'salainen',
-    }
+		const newUser = {
+			username: 'mluukkai',
+			name: 'Matti Luukkainen',
+			password: 'salainen',
+		};
 
-    await api
-      .post('/api/users')
-      .send(newUser)
-      .expect(201)
-      .expect('Content-Type', /application\/json/)
+		await api
+			.post('/api/users')
+			.send(newUser)
+			.expect(201)
+			.expect('Content-Type', /application\/json/);
 
-    const usersAtEnd = await helper.usersInDb()
-    expect(usersAtEnd).toHaveLength(usersAtStart.length + 1)
+		const usersAtEnd = await helper.usersInDb();
+		expect(usersAtEnd).toHaveLength(usersAtStart.length + 1);
 
-    const usernames = usersAtEnd.map(u => u.username)
-    expect(usernames).toContain(newUser.username)
-  }, 100000)
+		const usernames = usersAtEnd.map(u => u.username);
+		expect(usernames).toContain(newUser.username);
+	}, 100000);
 
-  test('creation fails with proper statuscode and message if username already taken', async () => {
-    const usersAtStart = await helper.usersInDb()
+	test('creation fails with proper statuscode and message if username already taken', async () => {
+		const usersAtStart = await helper.usersInDb();
 
-    const newUser = {
-      username: 'root',
-      name: 'Superuser',
-      password: 'salainen',
-    }
+		const newUser = {
+			username: 'root',
+			name: 'Superuser',
+			password: 'salainen',
+		};
 
-    const result = await api
-      .post('/api/users')
-      .send(newUser)
-      .expect(400)
-      .expect('Content-Type', /application\/json/)
+		const result = await api
+			.post('/api/users')
+			.send(newUser)
+			.expect(400)
+			.expect('Content-Type', /application\/json/);
 
-    expect(result.body.error).toContain('expected `username` to be unique')
+		expect(result.body.error).toContain('expected `username` to be unique');
 
-    const usersAtEnd = await helper.usersInDb()
-    expect(usersAtEnd).toEqual(usersAtStart)
-  }, 100000)
+		const usersAtEnd = await helper.usersInDb();
+		expect(usersAtEnd).toEqual(usersAtStart);
+	}, 100000);
 
-  test('creation fails with proper statuscode and message if username length is less than 3', async () => {
-    const usersAtStart = await helper.usersInDb()
+	test('creation fails with proper statuscode and message if username length is less than 3', async () => {
+		const usersAtStart = await helper.usersInDb();
 
-    const newUser = {
-      username: 'ro',
-      name: 'Superuser',
-      password: 'salainen',
-    }
+		const newUser = {
+			username: 'ro',
+			name: 'Superuser',
+			password: 'salainen',
+		};
 
-    const result = await api
-      .post('/api/users')
-      .send(newUser)
-      .expect(400)
-      .expect('Content-Type', /application\/json/)
+		const result = await api
+			.post('/api/users')
+			.send(newUser)
+			.expect(400)
+			.expect('Content-Type', /application\/json/);
 
-    expect(result.body.error).toContain(`User validation failed: username: Path \`username\` (\`${newUser.username}\`) is shorter than the minimum allowed length (3).`)
+		expect(result.body.error).toContain(`User validation failed: username: Path \`username\` (\`${newUser.username}\`) is shorter than the minimum allowed length (3).`);
 
-    const usersAtEnd = await helper.usersInDb()
-    expect(usersAtEnd).toEqual(usersAtStart)
-  }, 100000)
+		const usersAtEnd = await helper.usersInDb();
+		expect(usersAtEnd).toEqual(usersAtStart);
+	}, 100000);
 
-  test('creation fails with proper statuscode and message if password length is less than 3', async () => {
-    const usersAtStart = await helper.usersInDb()
+	test('creation fails with proper statuscode and message if password length is less than 3', async () => {
+		const usersAtStart = await helper.usersInDb();
 
-    const newUser = {
-      username: 'root',
-      name: 'Superuser',
-      password: 'sa',
-    }
+		const newUser = {
+			username: 'root',
+			name: 'Superuser',
+			password: 'sa',
+		};
 
-    const result = await api
-      .post('/api/users')
-      .send(newUser)
-      .expect(400)
-      .expect('Content-Type', /application\/json/)
+		const result = await api
+			.post('/api/users')
+			.send(newUser)
+			.expect(400)
+			.expect('Content-Type', /application\/json/);
 
-    expect(result.body.error).toContain("malformatted password. It must be a string of 3 character minimum size")
+		expect(result.body.error).toContain('malformatted password. It must be a string of 3 character minimum size');
 
-    const usersAtEnd = await helper.usersInDb()
-    expect(usersAtEnd).toEqual(usersAtStart)
-  }, 100000)
+		const usersAtEnd = await helper.usersInDb();
+		expect(usersAtEnd).toEqual(usersAtStart);
+	}, 100000);
 
-  test('creation fails with proper statuscode and message if password length is not a string', async () => {
-    const usersAtStart = await helper.usersInDb()
+	test('creation fails with proper statuscode and message if password length is not a string', async () => {
+		const usersAtStart = await helper.usersInDb();
 
-    const newUser = {
-      username: 'root',
-      name: 'Superuser',
-      password: 1234,
-    }
+		const newUser = {
+			username: 'root',
+			name: 'Superuser',
+			password: 1234,
+		};
 
-    const result = await api
-      .post('/api/users')
-      .send(newUser)
-      .expect(400)
-      .expect('Content-Type', /application\/json/)
+		const result = await api
+			.post('/api/users')
+			.send(newUser)
+			.expect(400)
+			.expect('Content-Type', /application\/json/);
 
-    expect(result.body.error).toContain("malformatted password. It must be a string of 3 character minimum size")
+		expect(result.body.error).toContain('malformatted password. It must be a string of 3 character minimum size');
 
-    const usersAtEnd = await helper.usersInDb()
-    expect(usersAtEnd).toEqual(usersAtStart)
-  }, 100000)
+		const usersAtEnd = await helper.usersInDb();
+		expect(usersAtEnd).toEqual(usersAtStart);
+	}, 100000);
 
-  test('there are two users in the database', async () => {
-    const result = await api
-      .get(`/api/users`)
-      .expect(200)
-      .expect('Content-Type', /application\/json/)
+	test('there are two users in the database', async () => {
+		const result = await api
+			.get('/api/users')
+			.expect(200)
+			.expect('Content-Type', /application\/json/);
 
-    expect(result.body.length).toBe(2)
-  })
-})
+		expect(result.body.length).toBe(2);
+	});
+});
 
 afterAll(async () => {
-  await mongoose.connection.close()
-})
+	await mongoose.connection.close();
+});
