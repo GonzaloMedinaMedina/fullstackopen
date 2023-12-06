@@ -14,7 +14,8 @@ const unknownEndpoint = (request, response) => {
   
 
 const errorHandler = (error, request, response, next) => {
-	logger.error(error.message)
+	logger.error(`Error name: ${error.name}`)
+	logger.error(`Message: ${error.message}`)
   
 	if (error.name === 'CastError')
 	{
@@ -24,12 +25,26 @@ const errorHandler = (error, request, response, next) => {
 	{
 		return response.status(400).json({ error: error.message })
 	}
+	else if (error.name ===  'JsonWebTokenError') 
+	{
+		return response.status(401).json({ error: error.message })
+	}
   
 	next(error)
+}
+
+const tokenExtractor = (request, response, next) => {
+	const authorization = request.get('authorization')
+	if (authorization && authorization.startsWith('Bearer ')) {
+	  request.token = authorization.replace('Bearer ', '')
+	}
+
+	next()
 }
 
 module.exports = {
 	requestLogger,
 	unknownEndpoint,
-	errorHandler
+	errorHandler,
+	tokenExtractor
 }
