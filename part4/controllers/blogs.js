@@ -3,6 +3,16 @@ const Blog = require('../models/blogs')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
 
+const getUserFromToken = async (token, response) => 
+{
+	const decodedToken = jwt.verify(token, process.env.SECRET)
+
+	if (!decodedToken.id)
+		return response.status(401).json({ error: 'token invalid' })
+
+	return await User.findById(decodedToken.id)
+}
+
 blogsRouter.get('/', async (request, response, next) => {
 	const blogs = await Blog
 		.find({})
@@ -17,13 +27,7 @@ blogsRouter.get('/:id', async (request, response, next) => {
   
 blogsRouter.post('/', async (request, response, next) => {
 	const body = request.body
-
-	const decodedToken = jwt.verify(request.token, process.env.SECRET)
-
-	if (!decodedToken.id)
-		return response.status(401).json({ error: 'token invalid' })
-
-	const user = await User.findById(decodedToken.id)
+	const user = await getUserFromToken(request.token, response);
 
 	const blog = new Blog({
 		title: body.title,
@@ -40,8 +44,20 @@ blogsRouter.post('/', async (request, response, next) => {
 })
 
 blogsRouter.delete('/:id', async (request, response, next) => {
-	const result = await Blog.findByIdAndDelete(request.params.id)
-	response.status(result === null ? 404 : 204).end()
+	const userFromRequest = await getUserFromToken(request.token, response)
+	const blogToDelete = await Blog.findById(request.params.id)
+
+	if (blogToDelete === null)
+	{
+		return response.status(404).json({error: 'Request\'s blog to delete not found.'})
+	}
+	else if (blogToDelete.user.toString() === userFromRequest.id)
+	{
+		await blogToDelete.deleteOne()
+		return response.status(204).end()
+	}
+
+	return response.status(400).json({error: 'Request\'s user is not the owner of the blog to delete.'})
 })
 
 blogsRouter.put('/:id', async (request, response, next) => {
