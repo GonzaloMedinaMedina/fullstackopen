@@ -2,7 +2,7 @@ import { useState } from "react"
 import loginService from "../services/login"
 import { blogUserKey } from "../services/blogs"
 
-const Login = ({setUser}) =>
+const Login = ({setUser, showMessage}) =>
 {
     const [username, setUsername] = useState('') 
     const [password, setPassword] = useState('') 
@@ -16,10 +16,11 @@ const Login = ({setUser}) =>
           setUser(user)
           setUsername('')
           setPassword('')
+          showMessage(`User ${user.username} successfully logged!`)
         } catch (exception) {
-          setErrorMessage('Wrong credentials')
+          showMessage('Wrong credentials', false)
           setTimeout(() => {
-            setErrorMessage(null)
+            showMessage(null)
           }, 5000)
         }
     }

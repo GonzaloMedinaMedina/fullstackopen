@@ -7,6 +7,7 @@ const CreateBlog = (props) =>
     const [author, setAuthor] = useState('') 
     const [url, setUrl] = useState('') 
 
+    const showMessage = props.showMessage;
     const blogs = props.blogs;
     const setBlogs = props.setBlogs;
 
@@ -24,12 +25,13 @@ const CreateBlog = (props) =>
             const blogsCopy = [...blogs];
             blogsCopy.push(newBlog)
             setBlogs(blogsCopy)
+            showMessage(`A new blog ${newBlog.title} by ${newBlog.author} added`)
         } 
         catch (exception) 
         {
-          setErrorMessage('Wrong credentials')
+            showMessage(`Error creating the new blog ${newBlog}`, false)
           setTimeout(() => {
-            setErrorMessage(null)
+            showMessage(null)
           }, 5000)
         }
     }
