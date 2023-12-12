@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import Login from './components/Login'
+import CreateBlog from './components/CreateBlog'
 import { blogUserKey } from "./services/blogs"
 
 const App = () => {
@@ -43,6 +44,7 @@ const App = () => {
         <div>
           <p>{user.username} logged in <button onClick={() => { logOut() }}>logout</button></p>
         </div>
+        <CreateBlog blogs={blogs} setBlogs={setBlogs}/>
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
         )}
