@@ -22,4 +22,13 @@ export const createBlog = async (newBlog) => {
   return response.data;
 }
 
+export const incrementBlogLikes = async (blog) => {
+  const config = {
+    headers: { Authorization: token },
+  }
+  blog.likes++;
+
+  return await axios.put(`${baseUrl}/${blog.id}`, blog, config);
+}
+
 export default { getAll, setToken, createBlog }
