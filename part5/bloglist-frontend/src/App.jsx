@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import Login from './components/Login'
@@ -11,6 +11,7 @@ const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState('')
   const [message, setMessage] = useState(null)
+  const blogFormRef = useRef()
 
   const showMessage = (message, success = true, time = 5000) => 
   {
@@ -57,16 +58,16 @@ const App = () => {
   {
     try 
     {
-
-        const newBlog = await createNewBlog(blog);
-        const blogsCopy = [...blogs];
-        blogsCopy.push(newBlog)
-        setBlogs(blogsCopy)
-        showMessage(`A new blog ${newBlog.title} by ${newBlog.author} added`)
+      blogFormRef.current.toggleVisibility();
+      const newBlog = await createNewBlog(blog);
+      const blogsCopy = [...blogs];
+      blogsCopy.push(newBlog)
+      setBlogs(blogsCopy)
+      showMessage(`A new blog ${newBlog.title} by ${newBlog.author} added`)
     } 
     catch (exception) 
     {
-        showMessage(`Error creating the new blog ${newBlog}`, false)
+      showMessage(`Error creating the new blog ${newBlog}`, false)
       setTimeout(() => {
         showMessage(null)
       }, 5000)
@@ -82,7 +83,7 @@ const App = () => {
         <div>
           <p>{user.username} logged in <button onClick={() => { logOut() }}>logout</button></p>
         </div>
-        <Togglable buttonLabel="new blog">
+        <Togglable buttonLabel="new blog" ref={blogFormRef}>
           <CreateBlog createBlog={createBlog}/>
         </Togglable>
         {blogs.map(blog =>
