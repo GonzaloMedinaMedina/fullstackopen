@@ -31,4 +31,12 @@ export const incrementBlogLikes = async (blog) => {
   return await axios.put(`${baseUrl}/${blog.id}`, blog, config);
 }
 
+export const removeBlog = async (blogId) => {
+  const config = {
+    headers: { Authorization: token },
+  }
+
+  return await axios.delete(`${baseUrl}/${blogId}`, config)
+}
+
 export default { getAll, setToken, createBlog }

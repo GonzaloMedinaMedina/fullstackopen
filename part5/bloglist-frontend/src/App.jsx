@@ -5,7 +5,7 @@ import Login from './components/Login'
 import CreateBlog from './components/CreateBlog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
-import { blogUserKey, createBlog as createNewBlog } from "./services/blogs"
+import { blogUserKey, createBlog as createNewBlog, removeBlog  } from "./services/blogs"
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -74,10 +74,23 @@ const App = () => {
     }
   }
 
+  const deleteBlog = async (blog) =>
+  {
+    if (window.confirm(`Removing blog ${blog.title} by ${blog.author}`))
+    {
+      const result = await removeBlog(blog.id);
+      if (result.status === 204)
+      {
+        const copy = blogs.filter(b => b.id !== blog.id);
+        setBlogs(copy);
+      }
+    }
+  }
+
   const blogsCompoents = useMemo(
     () => blogs
       .sort((a, b) => b.likes - a.likes)
-      .map(blog =><Blog key={blog.id} blog={blog}/>)        
+      .map(blog =><Blog key={blog.id} blog={blog} user={user} deleteBlog={deleteBlog}/>)        
     , [blogs])
 
   if (user !== '')

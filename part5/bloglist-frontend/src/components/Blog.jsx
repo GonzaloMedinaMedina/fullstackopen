@@ -1,7 +1,7 @@
 import { useState } from "react"
-import { incrementBlogLikes } from "../services/blogs"
+import { incrementBlogLikes} from "../services/blogs"
 
-const Blog = ({ blog }) => 
+const Blog = ({ blog, user, deleteBlog }) => 
 {
   const [visible, setVisible] = useState(false)
   const [likes, setLikes] = useState(blog.likes)
@@ -31,7 +31,17 @@ const Blog = ({ blog }) =>
     marginBottom: 5
   }
 
+  const invokeDeleteBlog = async (event) => 
+  { 
+    event.preventDefault();
+    await deleteBlog(blog);
+  }
+
   const changeVisibilityButton = <button onClick={() => { toggleVisibility() }}>{visible ? 'hide' : 'view'}</button>
+  const deleteButton = user.username === blog.user.username ? 
+    <button onClick={invokeDeleteBlog} style={{backgroundColor:'deepskyblue'}}>remove</button> 
+    : 
+    null;
 
   return <div style={blogStyle}>
     <div style={hideWhenVisible}>
@@ -43,6 +53,7 @@ const Blog = ({ blog }) =>
       <div>{blog.url}</div>
       <div>{likes} <button onClick={incrementLikes}>like</button></div>
       <div>{blog.author}</div>
+      {deleteButton}
     </div>
   </div>
 }
