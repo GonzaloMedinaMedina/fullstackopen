@@ -1,6 +1,6 @@
 import axios from 'axios'
 const baseUrl = '/api/blogs'
-export const blogUserKey = 'loggedBlogAppUser';
+export const blogUserKey = 'loggedBlogAppUser'
 
 let token = null
 
@@ -18,17 +18,17 @@ export const createBlog = async (newBlog) => {
     headers: { Authorization: token },
   }
 
-  const response = await axios.post(baseUrl, newBlog, config);
-  return response.data;
+  const response = await axios.post(baseUrl, newBlog, config)
+  return response.data
 }
 
 export const incrementBlogLikes = async (blog) => {
   const config = {
     headers: { Authorization: token },
   }
-  blog.likes++;
+  blog.likes++
 
-  return await axios.put(`${baseUrl}/${blog.id}`, blog, config);
+  return await axios.put(`${baseUrl}/${blog.id}`, blog, config)
 }
 
 export const removeBlog = async (blogId) => {
