@@ -4,7 +4,8 @@ import blogService from './services/blogs'
 import Login from './components/Login'
 import CreateBlog from './components/CreateBlog'
 import Notification from './components/Notification'
-import { blogUserKey } from "./services/blogs"
+import Togglable from './components/Togglable'
+import { blogUserKey, createBlog as createNewBlog } from "./services/blogs"
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -52,6 +53,26 @@ const App = () => {
     setUser('')
   }
 
+  const createBlog = async (blog) => 
+  {
+    try 
+    {
+
+        const newBlog = await createNewBlog(blog);
+        const blogsCopy = [...blogs];
+        blogsCopy.push(newBlog)
+        setBlogs(blogsCopy)
+        showMessage(`A new blog ${newBlog.title} by ${newBlog.author} added`)
+    } 
+    catch (exception) 
+    {
+        showMessage(`Error creating the new blog ${newBlog}`, false)
+      setTimeout(() => {
+        showMessage(null)
+      }, 5000)
+    }
+  }
+
   if (user !== '')
   {
     return (
@@ -61,7 +82,9 @@ const App = () => {
         <div>
           <p>{user.username} logged in <button onClick={() => { logOut() }}>logout</button></p>
         </div>
-        <CreateBlog blogs={blogs} setBlogs={setBlogs}  showMessage={showMessage}/>
+        <Togglable buttonLabel="new blog">
+          <CreateBlog createBlog={createBlog}/>
+        </Togglable>
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
         )}
