@@ -8,7 +8,8 @@ describe('<Blog />', () => {
   let container,
     user,
     blog,
-    deleteBlog;
+    mockDeleteBlog,
+    mockIncrementLikesHandler;
 
   beforeEach(() => 
   {
@@ -24,8 +25,10 @@ describe('<Blog />', () => {
       user: user
     }
     
-    deleteBlog = () => {}
-    container = render(<Blog blog={blog} user={user} deleteBlog={deleteBlog}/>).container
+    mockDeleteBlog = jest.fn()
+    mockIncrementLikesHandler = jest.fn().mockReturnValue({status: 204})
+
+    container = render(<Blog blog={blog} user={user} deleteBlog={mockDeleteBlog} incrementLikesHandler={mockIncrementLikesHandler}/>).container
   })
 
   test('renders blog', () => {
@@ -51,5 +54,15 @@ describe('<Blog />', () => {
     expect(hiddenElement).toHaveStyle('display: none')
     expect(visibleElement).toBeDefined()
     expect(hiddenElement).toBeDefined()
+  })
+
+  test('likes handler function is called two times when user clicks twice on like button', async () =>
+  {
+    const userSetup = userEvent.setup()
+    const likeButton = screen.getByText('like')
+    await userSetup.click(likeButton)
+    await userSetup.click(likeButton)
+
+    expect(mockIncrementLikesHandler.mock.calls).toHaveLength(2)
   })
 })
