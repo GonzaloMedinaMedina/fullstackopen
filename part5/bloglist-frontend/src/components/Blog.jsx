@@ -1,7 +1,6 @@
 import { useState } from "react"
-import { incrementBlogLikes} from "../services/blogs"
 
-const Blog = ({ blog, user, deleteBlog }) => 
+const Blog = ({ blog, user, deleteBlog, incrementLikesHandler }) => 
 {
   const [visible, setVisible] = useState(false)
   const [likes, setLikes] = useState(blog.likes)
@@ -16,11 +15,11 @@ const Blog = ({ blog, user, deleteBlog }) =>
   const incrementLikes = async (e) => 
   {
     e.preventDefault();
-    const response = await incrementBlogLikes(blog);
+    const response = await incrementLikesHandler(blog);
     if (response.status === 204)
     {
       setLikes(blog.likes)
-    }
+    }  
   }
 
   const blogStyle = {
