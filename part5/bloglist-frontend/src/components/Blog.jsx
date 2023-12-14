@@ -37,19 +37,21 @@ const Blog = ({ blog, user, deleteBlog }) =>
     await deleteBlog(blog);
   }
 
-  const changeVisibilityButton = <button onClick={() => { toggleVisibility() }}>{visible ? 'hide' : 'view'}</button>
   const deleteButton = user.username === blog.user.username ? 
     <button onClick={invokeDeleteBlog} style={{backgroundColor:'deepskyblue'}}>remove</button> 
     : 
     null;
 
-  return <div style={blogStyle}>
-    <div style={hideWhenVisible}>
+  return <div className="blog" style={blogStyle}>
+    <div className="hidden" style={hideWhenVisible}>
       {blog.title} {blog.author}
-      {changeVisibilityButton}
+      <button onClick={() => { toggleVisibility() }}>view</button>    
     </div>  
-    <div style={showWhenVisible}>
-      <div>{blog.title}{changeVisibilityButton}</div>
+    <div className="visible" style={showWhenVisible}>
+      <div>
+        {blog.title}
+        <button onClick={() => { toggleVisibility() }}>hide</button>    
+      </div>
       <div>{blog.url}</div>
       <div>{likes} <button onClick={incrementLikes}>like</button></div>
       <div>{blog.author}</div>
