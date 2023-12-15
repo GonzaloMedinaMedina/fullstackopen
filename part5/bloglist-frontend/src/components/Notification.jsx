@@ -8,7 +8,7 @@ const Notification = ({messageObject}) =>
   const messageType = messageObject?.success ? 'success' : 'error'
   const message = messageObject.message;
 
-  return <div className={messageType + ' message'}>{message}</div>
+  return <div className={messageType}>{message}</div>
 }
 
 
