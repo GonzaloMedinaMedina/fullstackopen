@@ -1,8 +1,11 @@
 describe('Blog app', function() {
+  let fakeUser,
+    fakeBlog;
+
   beforeEach(function() {
     cy.request('POST', 'http://localhost:3001/api/testing/reset')
 
-    const fakeUser = {
+    fakeUser = {
       name: 'fake name',
       username: 'fake username',
       password: 'fake password'
@@ -18,20 +21,16 @@ describe('Blog app', function() {
 
   describe('Login',function() {
     it('succeeds with correct credentials', function() {
-      cy.get('#username').type('fake username')
-      cy.get('#password').type('fake password')
-      cy.get('#login-button').click()
+      logIn();
 
       cy.get('.success')
-      .should('contain', 'User fake username successfully logged!') 
+      .should('contain', `User ${fakeUser.username} successfully logged!`) 
       .and('have.css', 'color', 'rgb(0, 128, 0)')
       .and('have.css', 'border-style', 'solid')
     })
 
     it('fails with wrong credentials', function() {
-      cy.get('#username').type('invalid username')
-      cy.get('#password').type('invalid password')
-      cy.get('#login-button').click()
+      logIn('invalid username', 'invalid password');
 
       cy.get('.error')
         .should('contain', 'Wrong credentials') 
@@ -39,4 +38,44 @@ describe('Blog app', function() {
         .and('have.css', 'border-style', 'solid')
     })
   })
+
+  describe('When logged in', function() {
+    beforeEach(function() 
+    {
+      logIn();
+      fakeBlog = {
+        title: 'new title',
+        author: 'new author',
+        likes: 0,
+        url: 'new url'
+      }
+    })
+
+    it('A blog can be created', function() {
+      createBlog();
+
+      cy.contains(fakeBlog.title);
+      cy.contains(fakeBlog.author);
+      cy.contains(fakeBlog.url);
+    })
+  })
+
+  const logIn = (username = fakeUser.username, password = fakeUser.password) => 
+  {
+    cy.get('#username').type(username)
+    cy.get('#password').type(password)
+    cy.get('#login-button').click()
+  }
+
+  const createBlog = () =>
+  {
+    cy.get('#toggable-hidden').click()
+
+    cy.get('#title').type(fakeBlog.title)
+    cy.get('#author').type(fakeBlog.author)
+    cy.get('#url').type(fakeBlog.url)
+
+    cy.get('#createBlog').click()
+  }
 })
+
