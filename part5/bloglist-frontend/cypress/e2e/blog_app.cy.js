@@ -86,6 +86,20 @@ describe('Blog app', function() {
 
       cy.contains(fakeBlog.title).should('not.exist')
     })
+
+    it('Another user can not see the remove button of the blog', function() {
+      let secondFakeUser = {
+        name: 'second fake name',
+        username: 'second fake username',
+        password: 'second fake password'
+      }
+
+      cy.request('POST', 'http://localhost:3001/api/users/', secondFakeUser)
+      logOut();
+      logIn(secondFakeUser.username, secondFakeUser.password);
+      cy.get('#viewBlog').click()
+      cy.contains('remove').should('not.exist')
+    })
   })
 
   const logIn = (username = fakeUser.username, password = fakeUser.password) => 
@@ -93,6 +107,11 @@ describe('Blog app', function() {
     cy.get('#username').type(username)
     cy.get('#password').type(password)
     cy.get('#login-button').click()
+  }
+
+  const logOut = () => 
+  {
+    cy.get('#logout').click()
   }
 
   const createBlog = () =>
