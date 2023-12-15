@@ -44,7 +44,7 @@ const Blog = ({ blog, user, deleteBlog, incrementLikesHandler }) =>
   return <div className="blog" style={blogStyle}>
     <div className="hidden" style={hideWhenVisible}>
       {blog.title} {blog.author}
-      <button onClick={() => { toggleVisibility() }}>view</button>    
+      <button id='viewBlog' onClick={() => { toggleVisibility() }}>view</button>    
     </div>  
     <div className="visible" style={showWhenVisible}>
       <div>
@@ -52,7 +52,7 @@ const Blog = ({ blog, user, deleteBlog, incrementLikesHandler }) =>
         <button onClick={() => { toggleVisibility() }}>hide</button>    
       </div>
       <div>{blog.url}</div>
-      <div>{likes} <button onClick={incrementLikes}>like</button></div>
+      <div id='like'>{likes} <button id='likeBlog' onClick={incrementLikes}>like</button></div>
       <div>{blog.author}</div>
       {deleteButton}
     </div>

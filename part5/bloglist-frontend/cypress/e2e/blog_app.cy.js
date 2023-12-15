@@ -58,6 +58,14 @@ describe('Blog app', function() {
       cy.contains(fakeBlog.author);
       cy.contains(fakeBlog.url);
     })
+
+    it('A user can like a blog', function() {
+      createBlog();
+
+      cy.get('#viewBlog').click()
+      cy.get('#likeBlog').click()
+      cy.get('#like').should('contain', '1')
+    })
   })
 
   const logIn = (username = fakeUser.username, password = fakeUser.password) => 
