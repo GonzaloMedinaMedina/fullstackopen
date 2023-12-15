@@ -102,6 +102,40 @@ describe('Blog app', function() {
     })
   })
 
+  describe('When there are more than one blog', function () {
+    let secondFakeBlog;
+
+    beforeEach(function()
+    {
+      logIn();
+      fakeBlog = {
+        title: 'new title',
+        author: 'new author',
+        likes: 0,
+        url: 'new url'
+      }
+
+      createBlog();
+
+      secondFakeBlog = {
+        title: 'second new title',
+        author: 'second new author',
+        likes: 0,
+        url: 'second new url'
+      }
+
+      createBlog(secondFakeBlog)
+    })  
+  
+    it('Blogs are ordered by number of likes', function () {
+      cy.get('.blog').eq(1).contains('view').click()
+      cy.get('.blog').eq(1).contains('like').click()
+
+      cy.get('.blog').eq(0).should('contain', secondFakeBlog.title)
+      cy.get('.blog').eq(1).should('contain', fakeBlog.title)
+    })
+  })
+
   const logIn = (username = fakeUser.username, password = fakeUser.password) => 
   {
     cy.get('#username').type(username)
@@ -114,13 +148,17 @@ describe('Blog app', function() {
     cy.get('#logout').click()
   }
 
-  const createBlog = () =>
+  const createBlog = (blog = fakeBlog) =>
   {
     cy.get('#toggable-hidden').click()
 
-    cy.get('#title').type(fakeBlog.title)
-    cy.get('#author').type(fakeBlog.author)
-    cy.get('#url').type(fakeBlog.url)
+    cy.get('#title').clear()
+    cy.get('#author').clear()
+    cy.get('#url').clear()    
+
+    cy.get('#title').type(blog.title)
+    cy.get('#author').type(blog.author)
+    cy.get('#url').type(blog.url)
 
     cy.get('#createBlog').click()
   }
