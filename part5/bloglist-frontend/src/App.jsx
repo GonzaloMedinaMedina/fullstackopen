@@ -90,7 +90,13 @@ const App = () => {
 
   const incrementLikesHandler = async (blog) =>
   {
-    return await incrementBlogLikes(blog);  
+    const response = await incrementBlogLikes(blog);  
+    if (response.status === 204)
+    {
+      const copy = blogs.filter(b => b.id !== blog.id)
+      copy.push(blog)
+      setBlogs(copy)
+    } 
   }
 
   const blogsCompoents = useMemo(

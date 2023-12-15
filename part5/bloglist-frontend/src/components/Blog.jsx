@@ -3,7 +3,6 @@ import { useState } from "react"
 const Blog = ({ blog, user, deleteBlog, incrementLikesHandler }) => 
 {
   const [visible, setVisible] = useState(false)
-  const [likes, setLikes] = useState(blog.likes)
 
   const hideWhenVisible = { display: visible ? 'none' : '' }
   const showWhenVisible = { display: visible ? '' : 'none' }
@@ -15,11 +14,7 @@ const Blog = ({ blog, user, deleteBlog, incrementLikesHandler }) =>
   const incrementLikes = async (e) => 
   {
     e.preventDefault();
-    const response = await incrementLikesHandler(blog);
-    if (response.status === 204)
-    {
-      setLikes(blog.likes)
-    }  
+    await incrementLikesHandler(blog); 
   }
 
   const blogStyle = {
@@ -52,7 +47,7 @@ const Blog = ({ blog, user, deleteBlog, incrementLikesHandler }) =>
         <button onClick={() => { toggleVisibility() }}>hide</button>    
       </div>
       <div>{blog.url}</div>
-      <div id='like'>{likes} <button id='likeBlog' onClick={incrementLikes}>like</button></div>
+      <div id='like'>{blog.likes} <button id='likeBlog' onClick={incrementLikes}>like</button></div>
       <div>{blog.author}</div>
       {deleteButton}
     </div>
