@@ -37,7 +37,7 @@ const Blog = ({ blog, user, deleteBlog, incrementLikesHandler }) =>
   }
 
   const deleteButton = user.username === blog.user.username ? 
-    <button onClick={invokeDeleteBlog} style={{backgroundColor:'deepskyblue'}}>remove</button> 
+    <button id='deleteBlog' onClick={invokeDeleteBlog} style={{backgroundColor:'deepskyblue'}}>remove</button> 
     : 
     null;
 

@@ -59,12 +59,32 @@ describe('Blog app', function() {
       cy.contains(fakeBlog.url);
     })
 
-    it('A user can like a blog', function() {
-      createBlog();
+  })
 
+  describe('When a user creates a blog', function () {
+    beforeEach(function()
+    {
+      logIn();
+      fakeBlog = {
+        title: 'new title',
+        author: 'new author',
+        likes: 0,
+        url: 'new url'
+      }
+      createBlog();
+    })
+
+    it('A user can like the blog', function() {
       cy.get('#viewBlog').click()
       cy.get('#likeBlog').click()
       cy.get('#like').should('contain', '1')
+    })
+
+    it('A user can remove the blog', function() {
+      cy.get('#viewBlog').click()
+      cy.get('#deleteBlog').click()
+
+      cy.contains(fakeBlog.title).should('not.exist')
     })
   })
 
