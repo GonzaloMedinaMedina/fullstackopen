@@ -39,7 +39,7 @@ const anecdoteReducer =  createSlice({
         anecdote.id !== id ? anecdote : anecdoteChanged 
       )
     },
-    createAnecdote(state, action)
+    create(state, action)
     {
       return state.concat(asObject(action.payload))
     }

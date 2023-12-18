@@ -6,7 +6,7 @@ const Filter = () =>
   const handleChange = (event) => 
   {
     event.preventDefault();
-    dispatch({ type: 'filter/filterChange', payload: event.target.value });
+    dispatch({ type: 'filter/change', payload: event.target.value });
   }
 
   const style = {

@@ -16,10 +16,11 @@ const AnecdoteList = () => {
     })
     const dispatch = useDispatch()
 
-    const vote = (id) => 
+    const vote = (id, content) => 
     {
         console.log('vote', id)
         dispatch({ type: 'anecdotes/vote', payload: { id } })
+        dispatch({ type: 'notification/change', payload: `You voted '${content}'`})
     }
     
     const sortedAnecdotes = anecdotes.slice().sort((a,b) => b.votes - a.votes)
@@ -32,7 +33,7 @@ const AnecdoteList = () => {
         </div>
         <div>
             has {anecdote.votes}
-            <button onClick={() => vote(anecdote.id)}>vote</button>
+            <button onClick={() => vote(anecdote.id, anecdote.content)}>vote</button>
         </div>
         </div>
     ))
