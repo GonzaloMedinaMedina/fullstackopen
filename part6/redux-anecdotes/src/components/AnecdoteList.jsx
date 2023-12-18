@@ -4,7 +4,17 @@ import { voteAnecdote } from '../reducers/anecdoteReducer'
 import { useDispatch } from 'react-redux'
 
 const AnecdoteList = () => {
-    const anecdotes = useSelector(state => state)
+    const anecdotes = useSelector(state => 
+    {
+        if (state.filter === '')
+        {
+            return state.anecdotes
+        }
+        else
+        {
+            return state.anecdotes.filter(a => a.content.includes(state.filter) )
+        }
+    })
     const dispatch = useDispatch()
 
     const vote = (id) => 
