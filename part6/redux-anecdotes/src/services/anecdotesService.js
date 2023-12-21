@@ -13,6 +13,17 @@ const create = async (content) => {
   return response.data
 }
 
+const vote = async (anecdoteId) => {
+  const anecdoteUrl = `${baseUrl}/${anecdoteId}`;
+  const response = await axios.get(anecdoteUrl)
+
+  const anecdoteToVote = response.data;
+  anecdoteToVote.votes++;
+
+  const result = await axios.put(anecdoteUrl, anecdoteToVote);
+  return result.data;
+}
+
 const getId = () => (100000 * Math.random()).toFixed(0)
 
 const asObject = (anecdote) => {
@@ -25,5 +36,6 @@ const asObject = (anecdote) => {
 
 export default {
   getAll: getAll,
-  create: create
+  create: create,
+  vote: vote
 }
