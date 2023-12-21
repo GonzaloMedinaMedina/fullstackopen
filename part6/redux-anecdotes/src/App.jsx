@@ -3,8 +3,8 @@ import AnecdoteList from './components/AnecdoteList'
 import Filter from './components/Filter'
 import Notification from './components/Notification'
 import { useEffect } from 'react'
-import anecdotesService from './services/anecdotesService'
 import { useDispatch } from 'react-redux'
+import { initializeAnecdotes } from './reducers/anecdoteReducer'
 
 const App = () => {
 
@@ -12,10 +12,7 @@ const App = () => {
 
   useEffect(() => 
   {
-    anecdotesService.getAll().then(anecdotes => 
-    {
-      dispatch({ type: 'anecdotes/set', payload: anecdotes})
-    })
+    dispatch(initializeAnecdotes())
   }, [])
 
   return (
