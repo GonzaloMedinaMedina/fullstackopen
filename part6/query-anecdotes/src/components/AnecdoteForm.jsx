@@ -8,7 +8,8 @@ const AnecdoteForm = () =>
   const queryClient = useQueryClient()
   const createAnecdoteMutation = useMutation({
     mutationFn: createAnecdote,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['anecdotes'] })
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['anecdotes'] }),
+    onError: () =>  dispatch({ type: 'too short anecdote, must have length 5 or more' })
   })
 
   const onCreate = (event) => 
@@ -17,7 +18,7 @@ const AnecdoteForm = () =>
     const content = event.target.anecdote.value
     event.target.anecdote.value = ''
     createAnecdoteMutation.mutate({ content, votes: 0, id: 100000 * Math.random().toFixed(0) })
-    
+
     dispatch({ type: `anecdote '${content}' has been created` })
     setTimeout(() => 
     {
