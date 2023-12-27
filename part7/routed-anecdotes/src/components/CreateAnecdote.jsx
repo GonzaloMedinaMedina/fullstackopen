@@ -19,6 +19,13 @@ const CreateAnecdote = (props) => {
       props.setNotification(`A new anecdote ${content.value} created!`)
       navigate('/')
     }
+
+    const handleReset = () => 
+    {
+      content.reset()
+      author.reset()
+      info.reset()
+    }
   
     return (
       <div>
@@ -37,6 +44,7 @@ const CreateAnecdote = (props) => {
             <input {...info} />
           </div>
           <button>create</button>
+          <button type="button" onClick={handleReset}>reset</button>
         </form>
       </div>
     )
