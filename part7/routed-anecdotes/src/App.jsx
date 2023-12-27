@@ -7,6 +7,7 @@ import CreateAnecdote from './components/CreateAnecdote'
 import AnecdoteList from './components/AnecdoteList'
 import About from './components/About'
 import Anecdote from './components/Anecdote'
+import Notification from './components/Notification'
 
 const Menu = () => {
   const padding = {
@@ -73,11 +74,16 @@ const App = () => {
       <h1>Software anecdotes</h1>
       <Router>
         <Menu />
-
+        <Notification notification={notification} setNotification={setNotification}/>
         <Routes>
           <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />
           <Route path="/anecdotes/:id" element={<Anecdote anecdotes={anecdotes} />} />
-          <Route path="/create" element={<CreateAnecdote addNew={addNew} />} />
+          <Route path="/create" element={
+            <CreateAnecdote 
+              addNew={addNew} 
+              setNotification={setNotification} 
+            />} 
+          />
           <Route path="/about" element={<About />} />
         </Routes>
 
