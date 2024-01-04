@@ -1,7 +1,10 @@
 import { useState } from "react"
+import { likeBlog, removeBlog } from "../reducers/blogsReducer"
+import { useDispatch } from "react-redux"
 
-const Blog = ({ blog, user, deleteBlog, incrementLikesHandler }) => 
+const Blog = ({ blog, user }) => 
 {
+  const dispatch = useDispatch()
   const [visible, setVisible] = useState(false)
 
   const hideWhenVisible = { display: visible ? 'none' : '' }
@@ -14,7 +17,7 @@ const Blog = ({ blog, user, deleteBlog, incrementLikesHandler }) =>
   const incrementLikes = async (e) => 
   {
     e.preventDefault();
-    await incrementLikesHandler(blog); 
+    dispatch(likeBlog(blog)); 
   }
 
   const blogStyle = {
@@ -28,7 +31,10 @@ const Blog = ({ blog, user, deleteBlog, incrementLikesHandler }) =>
   const invokeDeleteBlog = async (event) => 
   { 
     event.preventDefault();
-    await deleteBlog(blog);
+    if (window.confirm(`Removing blog ${blog.title} by ${blog.author}`))
+    {
+      dispatch(removeBlog(blog.id))
+    }
   }
 
   const deleteButton = user.username === blog.user.username ? 

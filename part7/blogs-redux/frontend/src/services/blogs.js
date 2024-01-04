@@ -40,15 +40,20 @@ export const createBlog = async (newBlog) => {
 
 export const incrementBlogLikes = async (blog) => {
   const config = getToken()
-  blog.likes++
+  const blogUrl = `${baseUrl}/${blog.id}`
 
-  return await axios.put(`${baseUrl}/${blog.id}`, blog, config)
+  const response = await axios.get(blogUrl, config)
+  const blogUpdated = response.data;
+  blogUpdated.likes++;
+
+  const result = await axios.put(blogUrl, blogUpdated, config);
+  return result.status === 204 ? blogUpdated : 404;
 }
 
-export const removeBlog = async (blogId) => {
+export const remove = async (blogId) => {
   const config = getToken()
 
   return await axios.delete(`${baseUrl}/${blogId}`, config)
 }
 
-export default { getAll, setToken, createBlog }
+export default { getAll, setToken, createBlog, incrementBlogLikes, remove }
