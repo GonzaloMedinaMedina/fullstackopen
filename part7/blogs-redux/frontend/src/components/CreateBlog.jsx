@@ -1,10 +1,7 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
 
 const CreateBlog = ({createBlog}) => 
 {
-  const dispatch = useDispatch()
-
   const [title, setTitle] = useState('') 
   const [author, setAuthor] = useState('') 
   const [url, setUrl] = useState('') 
