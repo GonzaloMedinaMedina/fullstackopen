@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { likeBlog, removeBlog } from "../reducers/blogsReducer"
 import { useDispatch } from "react-redux"
+import { setNotification } from './reducers/notificationReducer'
 
 const Blog = ({ blog, user }) => 
 {
@@ -34,6 +35,7 @@ const Blog = ({ blog, user }) =>
     if (window.confirm(`Removing blog ${blog.title} by ${blog.author}`))
     {
       dispatch(removeBlog(blog.id))
+      dispatch(setNotification(`blog ${blog.title} removed`))
     }
   }
 
