@@ -1,9 +1,40 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useNotificationDispatch } from '../NotificationContext'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { createBlog as createBlogRequest } from "../services/blogs";
 
-const CreateBlog = ({createBlog}) => 
+const CreateBlog = ({blogFormRef}) => 
 {
-  const dispatch = useDispatch()
+  const dispatch = useNotificationDispatch()
+  const queryClient = useQueryClient()
+  const createBlogMutation = useMutation({
+    mutationFn: createBlogRequest,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['blogs'] }),
+    onError: () =>  dispatch({ message: 'too short blog title, must have length 5 or more', success: false })
+  })
+  
+  const setNotification = ((message, success = true) => 
+  {
+    dispatch({ message, success })
+    setTimeout(() => 
+    {
+      dispatch({ message: '', success })
+    }, 10000)
+  })
+  
+  const createBlog = async (blog) => 
+  {
+    try 
+    {
+      blogFormRef.current.toggleVisibility();
+      createBlogMutation.mutate(blog)
+      setNotification(`A new blog ${blog.title} by ${blog.author} added`)
+    } 
+    catch (exception) 
+    {
+      setNotification(`Error creating the new blog ${blog}`, false)
+    }
+  }
 
   const [title, setTitle] = useState('') 
   const [author, setAuthor] = useState('') 
