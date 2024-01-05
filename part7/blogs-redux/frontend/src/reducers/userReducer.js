@@ -32,23 +32,12 @@ export const initializeUser = () => {
             dispatch(change(user))
         }
     }
-} 
+}
 
 export const logOut = () => {
     return async dispatch => {
         window.localStorage.removeItem(blogUserKey);
         dispatch(change(initialState))
-    }
-}
-
-export const setUser = (username, token) => {
-    return async dispatch => {
-        const user = {
-            username: username,
-            token: token
-        }
-        window.localStorage.removeItem(blogUserKey);
-        dispatch(change(user))
     }
 }
 
