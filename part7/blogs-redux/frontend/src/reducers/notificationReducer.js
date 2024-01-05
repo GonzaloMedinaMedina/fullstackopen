@@ -18,7 +18,7 @@ const notificationSlice = createSlice({
 
 export const { change } = notificationSlice.actions
 
-export const setNotification = (content, time = 10, success = true) => {
+export const setNotification = (content, success = true) => {
     return async dispatch => {
         dispatch(change({
             message: content, 
@@ -26,7 +26,7 @@ export const setNotification = (content, time = 10, success = true) => {
         }))
         setTimeout(() => {
             dispatch(change(''))
-        }, time * 1000)
+        }, 10 * 1000)
     }
 }
 
