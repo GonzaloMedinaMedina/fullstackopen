@@ -4,6 +4,7 @@ import App from './App'
 import { store } from './store'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { NotificationProvider } from './NotificationContext'
+import { BlogProvider } from './BlogContext'
 
 const queryClient = new QueryClient()
 

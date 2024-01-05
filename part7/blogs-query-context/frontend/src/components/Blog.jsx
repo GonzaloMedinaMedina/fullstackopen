@@ -1,14 +1,26 @@
 import { useState } from "react"
-import { likeBlog, removeBlog } from "../reducers/blogsReducer"
-import { useDispatch } from "react-redux"
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { incrementBlogLikes, remove } from "../services/blogs"
+import { useNotificationDispatch } from '../NotificationContext'
 
 const Blog = ({ blog, user }) => 
 {
-  const dispatch = useDispatch()
+  const dispatch = useNotificationDispatch()
+  const queryClient = useQueryClient()
   const [visible, setVisible] = useState(false)
 
   const hideWhenVisible = { display: visible ? 'none' : '' }
   const showWhenVisible = { display: visible ? '' : 'none' }
+
+  const likeBlogMutation = useMutation({
+    mutationFn: incrementBlogLikes,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['blogs'] })
+  })
+
+  const deleteBlogMutation = useMutation({
+    mutationFn: remove,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['blogs'] })
+  })
 
   const toggleVisibility = () => {
     setVisible(!visible)
@@ -17,7 +29,7 @@ const Blog = ({ blog, user }) =>
   const incrementLikes = async (e) => 
   {
     e.preventDefault();
-    dispatch(likeBlog(blog)); 
+    likeBlogMutation.mutate({...blog})
   }
 
   const blogStyle = {
@@ -33,7 +45,12 @@ const Blog = ({ blog, user }) =>
     event.preventDefault();
     if (window.confirm(`Removing blog ${blog.title} by ${blog.author}`))
     {
-      dispatch(removeBlog(blog.id))
+      deleteBlogMutation.mutate(blog.id)
+      dispatch({ message: `Removed ${blog.title} blog`, success: false })
+      setTimeout(() => 
+      {
+        dispatch({ message: '', success: false })
+      }, 10000)
     }
   }
 
