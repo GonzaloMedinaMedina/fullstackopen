@@ -14,7 +14,7 @@ const Login = () =>
         event.preventDefault()
     
         try {
-          const result = await dispatch(logIn(username, password))
+          await dispatch(logIn(username, password))
           dispatch(setNotification(`User ${username} successfully logged!`))
         } catch (exception) {
           dispatch(setNotification('Wrong credentials', false))
