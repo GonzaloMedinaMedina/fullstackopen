@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { likeBlog, removeBlog } from "../reducers/blogsReducer"
 import { useDispatch } from "react-redux"
-import { setNotification } from './reducers/notificationReducer'
+import { setNotification } from "../reducers/notificationReducer"
 
 const Blog = ({ blog, user }) => 
 {

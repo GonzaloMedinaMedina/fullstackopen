@@ -1,6 +1,9 @@
-import { useState, useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
+import {
+  BrowserRouter as Router,
+  Routes, Route, Link
+} from 'react-router-dom'
 import Blog from './components/Blog'
-import blogService from './services/blogs'
 import Login from './components/Login'
 import CreateBlog from './components/CreateBlog'
 import Notification from './components/Notification'
@@ -11,6 +14,22 @@ import { createBlog as createBlogReducer } from './reducers/blogsReducer'
 import { useSelector } from 'react-redux'
 import { initializeBlogs } from './reducers/blogsReducer'
 import { initializeUser, logOut as logOutUser } from './reducers/userReducer'
+import Users from './components/Users'
+
+const Menu = () => {
+  const padding = {
+    paddingRight: 5
+  }
+  return (
+  <> 
+    <div>
+      <Link style={padding} to="/">blogs</Link>
+      <Link style={padding} to="/users">users</Link>
+    </div>
+    <br/>
+  </>
+  )
+}
 
 const App = () => {
   const dispatch = useDispatch()
@@ -54,10 +73,20 @@ const App = () => {
         <div>
           <p>{user.username} logged in <button id='logout' onClick={() => { dispatch(logOutUser()) }}>logout</button></p>
         </div>
-        <Togglable buttonLabel="new blog" ref={blogFormRef}>
-          <CreateBlog createBlog={createBlog}/>
-        </Togglable>
-        {blogsCompoents}
+        <Router>
+          <Menu/>
+          <Routes>
+            <Route path="/" element={
+            <>
+            <Togglable buttonLabel="new blog" ref={blogFormRef}>
+              <CreateBlog createBlog={createBlog}/>
+            </Togglable>  
+            {blogsCompoents}
+            </>          
+            }/>
+            <Route path="/users" element={<Users/>} />
+          </Routes>
+        </Router>
       </div>
     )
   }
