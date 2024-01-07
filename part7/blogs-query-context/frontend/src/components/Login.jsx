@@ -1,11 +1,13 @@
 import { useState } from "react"
 import { useNotificationDispatch } from "../NotificationContext";
-import { useDispatch } from "react-redux";
-import { logIn } from "../reducers/userReducer";
+import { useUserDispatch } from "../UserContext";
+import { login as loginService } from "../services/login";
 
 const Login = () =>
 {
+  const userDispatch = useUserDispatch()
   const notificationDispatch = useNotificationDispatch()
+
   const setNotification = ((message, success = true) => 
   {
     notificationDispatch({ message, success })
@@ -15,25 +17,24 @@ const Login = () =>
     }, 10000)
   })
 
-  const dispatch = useDispatch()
+  const [username, setUsername] = useState('') 
+  const [password, setPassword] = useState('') 
 
-    const [username, setUsername] = useState('') 
-    const [password, setPassword] = useState('') 
-
-    const handleLogin = async (event) => {
-        event.preventDefault()
-    
-        try {
-          await dispatch(logIn(username, password))
-          setNotification(`User ${username} successfully logged!`)
-        } catch (exception) {
-          setNotification('Wrong credentials', false)
-        }
-        finally {
-          setUsername('')
-          setPassword('')
-        }
+  const handleLogin = async (event) => {
+    event.preventDefault()
+  
+    try {
+      const user = await loginService({username, password,})
+      userDispatch(user)
+      setNotification(`User ${username} successfully logged!`)
+    } catch (exception) {
+      setNotification('Wrong credentials', false)
     }
+    finally {
+      setUsername('')
+      setPassword('')
+    }
+  }
 
     return <form onSubmit={handleLogin}>
     <div>

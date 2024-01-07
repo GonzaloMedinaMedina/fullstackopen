@@ -1,15 +1,13 @@
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 import Blog from './components/Blog'
 import Login from './components/Login'
 import CreateBlog from './components/CreateBlog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import { useQuery } from '@tanstack/react-query'
-import { useDispatch } from "react-redux";
-import { useSelector } from 'react-redux'
-import { initializeBlogs } from './reducers/blogsReducer'
-import { initializeUser, logOut as logOutUser } from './reducers/userReducer'
 import { getAll } from './services/blogs'
+import { useUserValue, useUserDispatch } from './UserContext'
+const blogUserKey = 'loggedBlogAppUser'
 
 const App = () => 
 {
@@ -18,16 +16,9 @@ const App = () =>
     queryFn: async () => await getAll()
   })
 
-  const dispatch = useDispatch()
-
-  const user = useSelector(state => state.user)
+  const userDispatch = useUserDispatch()
+  const user = useUserValue()
   const blogFormRef = useRef()
-
-  useEffect(() => {
-      dispatch(initializeUser())
-      dispatch(initializeBlogs())
-  }, 
-  [])
 
   if (result.isLoading)
   {
@@ -43,12 +34,18 @@ const App = () =>
 
   if (user.username !== '')
   {
+    const logOut = () => 
+    {
+      window.localStorage.removeItem(blogUserKey);
+      userDispatch({username: '', token: ''})
+    }
+
     return (
       <div>
         <h2>blogs</h2>
         <Notification/>
         <div>
-          <p>{user.username} logged in <button id='logout' onClick={() => { dispatch(logOutUser()) }}>logout</button></p>
+          <p>{user.username} logged in <button id='logout' onClick={() => { logOut() }}>logout</button></p>
         </div>
         <Togglable buttonLabel="new blog" ref={blogFormRef}>
           <CreateBlog blogFormRef={blogFormRef}/>
