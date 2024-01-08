@@ -76,4 +76,18 @@ blogsRouter.put('/:id', middleware.userExtractor, async (request, response, next
 	}
 });
 
+blogsRouter.post('/:id/comments', async (request, response, next) => {
+	const body = request.body;
+	const blogToUpdate = await Blog.findById(request.params.id);
+
+	if (blogToUpdate === null)
+	{
+		return response.status(404).json({error: 'Request\'s blog to update not found.'});
+	}
+
+	blogToUpdate.comments.push(body.comment)
+	const result = await Blog.findByIdAndUpdate(request.params.id, blogToUpdate, { new: true, runValidators: true, context: 'query' });
+	response.status(result === null ? 404 : 204).end();	
+})
+
 module.exports = blogsRouter;

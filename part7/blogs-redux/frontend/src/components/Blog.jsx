@@ -2,15 +2,14 @@ import { likeBlog, removeBlog } from "../reducers/blogsReducer"
 import { useDispatch } from "react-redux"
 import { setNotification } from "../reducers/notificationReducer"
 import { useParams } from "react-router-dom";
+import { useState } from "react";
+import { addComment } from "../reducers/blogsReducer";
 
 const Blog = ({ blogs, user }) => 
 {
   const id = useParams().id;
   const blog = blogs.find(b => b.id === id);
-
-  if (!blog)
-    return null
-
+  const [comment, setComment] = useState('')
   const dispatch = useDispatch()
 
   const incrementLikes = async (e) => 
@@ -37,6 +36,18 @@ const Blog = ({ blogs, user }) =>
     }
   }
 
+  const handleAddComment = async (event) => 
+  {
+    event.preventDefault();     
+    const blogCopy = {...blog}
+    blogCopy.comments = [...blogCopy.comments, comment]
+    dispatch(addComment(blogCopy));    
+  }
+
+  
+  if (!blog)
+    return null
+
   const deleteButton = user.username === blog.user.username ? 
     <button id='deleteBlog' onClick={invokeDeleteBlog} style={{backgroundColor:'deepskyblue'}}>remove</button> 
     : 
@@ -51,8 +62,20 @@ const Blog = ({ blogs, user }) =>
       <div>Added by {blog.author}</div>
       <br/>
       <h2>comments</h2>
+      <form onSubmit={handleAddComment}>
+      <div>
+          <input
+          id='comment'
+          type="text"
+          value={comment}
+          name="Comment"
+          onChange={({ target }) => setComment(target.value)}
+        />
+      </div>
+      <button id='addComment' type="submit">add comment</button>
+    </form>
       <ul>
-        {blog.comments.map(c => <li>{c}</li>)}
+        {blog.comments.map(c => <li key={c}>{c}</li>)}
       </ul>
       {deleteButton}
     </div>

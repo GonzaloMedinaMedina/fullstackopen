@@ -24,11 +24,18 @@ const blogslice = createSlice({
         set(state, action)
         {
             return action.payload
+        },
+        update(state, action)
+        {
+            const id = action.payload.id
+            return state.map(blog =>
+                blog.id !== id ? blog : action.payload 
+            )
         }
     }
 })
 
-export const { like, create, remove, set } = blogslice.actions
+export const { like, create, remove, set, update } = blogslice.actions
 
 export const initializeBlogs = () => {
     return async dispatch => {
@@ -57,6 +64,17 @@ export const removeBlog = (id) => {
         if (response.status === 204)
         {
             dispatch(remove(id))
+        }
+    }
+}
+
+export const addComment = (blogCopy) => 
+{
+    return async dispatch => {
+        const response = await blogService.comment(blogCopy.id, blogCopy.comments[blogCopy.comments.length - 1])
+        if (response.status === 204)
+        {
+            dispatch(update(blogCopy))
         }
     }
 }
