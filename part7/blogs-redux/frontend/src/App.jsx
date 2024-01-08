@@ -59,10 +59,18 @@ const App = () => {
     }
   }
 
+  const blogStyle = {
+    paddingTop: 10,
+    paddingLeft: 2,
+    border: 'solid',
+    borderWidth: 1,
+    marginBottom: 5
+  }
+
   const sortedBlogs = blogs.slice().sort((a, b) => b.likes - a.likes)
   const blogsCompoents = useMemo(
     () => sortedBlogs
-      .map(blog =><Blog key={blog.id} blog={blog} user={user}/>)        
+      .map(blog => <div style={blogStyle} ><Link to={`/blogs/${blog.id}`}>{blog.title}</Link></div>)
     , [blogs])
 
   if (user.username !== '')
@@ -87,6 +95,7 @@ const App = () => {
             }/>
             <Route path="/users" element={<Users/>} />
             <Route path="/users/:id" element={<UserBlogs/>} />
+            <Route path="/blogs/:id" element={<Blog blogs={blogs} user={user}/>} />
           </Routes>
         </Router>
       </div>
