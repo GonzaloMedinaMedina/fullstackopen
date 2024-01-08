@@ -52,6 +52,8 @@ const Blog = ({ blogs, user }) =>
     <button id='deleteBlog' onClick={invokeDeleteBlog} style={{backgroundColor:'deepskyblue'}}>remove</button> 
     : 
     null;
+  
+  let i= 0; 
 
   return <div style={blogStyle}>
       <h1>
@@ -71,11 +73,11 @@ const Blog = ({ blogs, user }) =>
           name="Comment"
           onChange={({ target }) => setComment(target.value)}
         />
+        <button id='addComment' type="submit">add comment</button>
       </div>
-      <button id='addComment' type="submit">add comment</button>
     </form>
       <ul>
-        {blog.comments.map(c => <li key={c}>{c}</li>)}
+        {blog.comments.map(c => <li key={i++}>{c}</li>)}
       </ul>
       {deleteButton}
     </div>
