@@ -7,6 +7,10 @@ const Blog = ({ blogs, user }) =>
 {
   const id = useParams().id;
   const blog = blogs.find(b => b.id === id);
+
+  if (!blog)
+    return null
+
   const dispatch = useDispatch()
 
   const incrementLikes = async (e) => 
@@ -45,6 +49,11 @@ const Blog = ({ blogs, user }) =>
       <a href={blog.url}>{blog.url}</a>
       <div id='like'>{blog.likes} <button id='likeBlog' onClick={incrementLikes}>like</button></div>
       <div>Added by {blog.author}</div>
+      <br/>
+      <h2>comments</h2>
+      <ul>
+        {blog.comments.map(c => <li>{c}</li>)}
+      </ul>
       {deleteButton}
     </div>
 }
