@@ -77,13 +77,13 @@ const App = () => {
   {
     return (
       <div>
-        <h2>blogs</h2>
         <Notification/>
-        <div>
-          <p>{user.username} logged in <button id='logout' onClick={() => { dispatch(logOutUser()) }}>logout</button></p>
-        </div>
-        <Router>
+        <Router>          
           <Menu/>
+          <div>            
+            <p>{user.username} logged in <button id='logout' onClick={() => { dispatch(logOutUser()) }}>logout</button></p>
+          </div>
+          <h2>blog app</h2>
           <Routes>
             <Route path="/" element={
             <>
