@@ -15,6 +15,7 @@ import { useSelector } from 'react-redux'
 import { initializeBlogs } from './reducers/blogsReducer'
 import { initializeUser, logOut as logOutUser } from './reducers/userReducer'
 import Users from './components/Users'
+import UserBlogs from './components/UserBlogs'
 
 const Menu = () => {
   const padding = {
@@ -85,6 +86,7 @@ const App = () => {
             </>          
             }/>
             <Route path="/users" element={<Users/>} />
+            <Route path="/users/:id" element={<UserBlogs/>} />
           </Routes>
         </Router>
       </div>

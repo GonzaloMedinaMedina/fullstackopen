@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from "react"
 import { getAll } from "../services/users"
+import { Link } from "react-router-dom"
 
 const User = ({user}) =>
 {
+    const padding = {
+        paddingRight: 5
+    }
+
     return <tr>
-        <td>{user.name}</td>
+        <td><Link style={padding} to={`/users/${user.id}`} state={user}>{user.name}</Link></td>
         <td>{user.blogs.length}</td>
     </tr>
 }
