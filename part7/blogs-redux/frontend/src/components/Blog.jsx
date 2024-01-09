@@ -1,7 +1,7 @@
 import { likeBlog, removeBlog } from "../reducers/blogsReducer"
 import { useDispatch } from "react-redux"
 import { setNotification } from "../reducers/notificationReducer"
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { addComment } from "../reducers/blogsReducer";
 
@@ -11,19 +11,12 @@ const Blog = ({ blogs, user }) =>
   const blog = blogs.find(b => b.id === id);
   const [comment, setComment] = useState('')
   const dispatch = useDispatch()
+  const navigate = useNavigate();
 
   const incrementLikes = async (e) => 
   {
     e.preventDefault();
     dispatch(likeBlog(blog)); 
-  }
-
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
   }
 
   const invokeDeleteBlog = async (event) => 
@@ -32,7 +25,8 @@ const Blog = ({ blogs, user }) =>
     if (window.confirm(`Removing blog ${blog.title} by ${blog.author}`))
     {
       dispatch(removeBlog(blog.id))
-      dispatch(setNotification(`blog ${blog.title} removed`))
+      dispatch(setNotification(`blog ${blog.title} removed`, false))
+      navigate("/")
     }
   }
 
