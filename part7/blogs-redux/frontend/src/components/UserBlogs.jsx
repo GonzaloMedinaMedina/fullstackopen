@@ -19,12 +19,14 @@ const UserBlogs = () =>
     if (user === null || user === undefined)
         return null;
 
-    return <div>
-        <h1>{user.username}</h1>
-        <h2>added blogs</h2>
-        <ul>
-            {user.blogs.map(b => <li key={b.id}>{b.title}</li>)}
-        </ul>
+    return <div className="p-2 border-2 border-blue-500 bg-gray-200 rounded">
+        <h1 className="font-bold text-xl">{user.username}</h1>
+        <div className="p-2 border-2 border-black bg-gray-300 w-fit rounded">
+            <h2 className="font-semibold text-l">Added blogs</h2>
+            <ul>
+                {user.blogs.map(b => <li key={b.id}>{b.title}</li>)}
+            </ul>
+        </div>
     </div>
 }
 

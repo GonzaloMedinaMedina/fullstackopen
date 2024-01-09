@@ -18,14 +18,11 @@ import Users from './components/Users'
 import UserBlogs from './components/UserBlogs'
 
 const Menu = () => {
-  const padding = {
-    paddingRight: 5
-  }
   return (
   <> 
-    <div>
-      <Link style={padding} to="/">blogs</Link>
-      <Link style={padding} to="/users">users</Link>
+    <div className='p-5 border-b border-black'>
+      <Link className='m-2 p-2 bg-sky-500 hover:bg-sky-700 rounded-full' to="/">Blogs</Link>
+      <Link className='m-2 p-2 bg-sky-500 hover:bg-sky-700 rounded-full' to="/users">Users</Link>
     </div>
     <br/>
   </>
@@ -67,47 +64,56 @@ const App = () => {
     marginBottom: 5
   }
 
+  let i=0;
+
   const sortedBlogs = blogs.slice().sort((a, b) => b.likes - a.likes)
   const blogsCompoents = useMemo(
     () => sortedBlogs
-      .map(blog => <div style={blogStyle} ><Link to={`/blogs/${blog.id}`}>{blog.title}</Link></div>)
+      .map(blog => <div className={"hover:bg-sky-400 rounded-full text-center " + (i++ % 2 === 0 ? "bg-sky-200" : "bg-blue-200")} style={blogStyle} ><Link className='block' to={`/blogs/${blog.id}`}>{blog.title}</Link></div>)
     , [blogs])
 
   if (user.username !== '')
   {
     return (
       <div>
-        <Notification/>
         <Router>          
           <Menu/>
-          <div>            
-            <p>{user.username} logged in <button id='logout' onClick={() => { dispatch(logOutUser()) }}>logout</button></p>
+          <div className='m-5'>
+            <Notification/>
+            <div className='border-2 border-blue-500 bg-gray-200 w-fit p-2 rounded'>            
+              <p><strong>{user.username}</strong> logged in</p>
+              <button className='bg-sky-500 hover:bg-sky-700 rounded-full p-2 w-full' id='logout' onClick={() => { dispatch(logOutUser()) }}>logout</button>
+            </div>
+            <h2 className='text-4xl font-bold m-5'>blog app</h2>
+            <Routes>
+              <Route path="/" element={
+              <>
+              <Togglable buttonLabel="new blog" ref={blogFormRef}>
+                <CreateBlog createBlog={createBlog}/>
+              </Togglable>  
+              {blogsCompoents}
+              </>          
+              }/>
+              <Route path="/users" element={<Users/>} />
+              <Route path="/users/:id" element={<UserBlogs/>} />
+              <Route path="/blogs/:id" element={<Blog blogs={blogs} user={user}/>} />
+            </Routes>
           </div>
-          <h2>blog app</h2>
-          <Routes>
-            <Route path="/" element={
-            <>
-            <Togglable buttonLabel="new blog" ref={blogFormRef}>
-              <CreateBlog createBlog={createBlog}/>
-            </Togglable>  
-            {blogsCompoents}
-            </>          
-            }/>
-            <Route path="/users" element={<Users/>} />
-            <Route path="/users/:id" element={<UserBlogs/>} />
-            <Route path="/blogs/:id" element={<Blog blogs={blogs} user={user}/>} />
-          </Routes>
         </Router>
       </div>
     )
   }
 
   return (
-    <div>
-      <h2>Log in to application</h2>
+    <>
       <Notification/>
-      <Login/>
-    </div>
+      <div className='flex justify-center mt-[10%]'>
+        <div className='text-center border-2 border-blue-500 bg-gray-200 w-fit p-2 rounded'>
+          <h2 className='text-2xl'>Log in to application</h2>
+          <Login/>
+        </div>
+      </div>
+    </>
   )
 }
 

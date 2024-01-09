@@ -49,36 +49,37 @@ const Blog = ({ blogs, user }) =>
     return null
 
   const deleteButton = user.username === blog.user.username ? 
-    <button id='deleteBlog' onClick={invokeDeleteBlog} style={{backgroundColor:'deepskyblue'}}>remove</button> 
+    <button className='bg-red-500 m-2 p-3 rounded-full' id='deleteBlog' onClick={invokeDeleteBlog}>remove blog</button> 
     : 
     null;
   
   let i= 0; 
 
-  return <div style={blogStyle}>
-      <h1>
-        {blog.title}
-      </h1>
-      <a href={blog.url}>{blog.url}</a>
-      <div id='like'>{blog.likes} <button id='likeBlog' onClick={incrementLikes}>like</button></div>
-      <div>Added by {blog.author}</div>
-      <br/>
-      <h2>comments</h2>
-      <form onSubmit={handleAddComment}>
-      <div>
-          <input
-          id='comment'
-          type="text"
-          value={comment}
-          name="Comment"
-          onChange={({ target }) => setComment(target.value)}
-        />
-        <button id='addComment' type="submit">add comment</button>
+  return <div className="border-2 border-blue-500 bg-gray-200 rounded">
+      <div className="p-2">
+        <p className="m-1"><strong>Title: </strong>{blog.title}</p>
+        <p className="m-1"><strong>Url: </strong><a href={blog.url}>{blog.url}</a></p>
+        <p className="m-1" id='like'><strong>Likes: </strong>{blog.likes} <button className="bg-sky-500 hover:bg-sky-700 rounded p-1" id='likeBlog' onClick={incrementLikes}>like</button></p>
+        <p className="m-1"><strong>Author: </strong>{blog.author}</p>
       </div>
-    </form>
-      <ul>
-        {blog.comments.map(c => <li key={i++}>{c}</li>)}
-      </ul>
+      <div className="border-2 border-black p-2 m-2 bg-gray-300 w-fit">
+        <h2 className="font-bold text-xl m-1">Comments</h2>
+        <form onSubmit={handleAddComment}>
+        <div>
+            <input
+            id='comment'
+            type="text"
+            value={comment}
+            name="Comment"
+            onChange={({ target }) => setComment(target.value)}
+          />
+          <button id='addComment' type="submit" className="m-1 bg-sky-500 hover:bg-sky-700 rounded p-1">add comment</button>
+        </div>
+        </form>
+        <ul>
+          {blog.comments.map(c => <li key={i++}>{c}</li>)}
+        </ul>
+      </div>
       {deleteButton}
     </div>
 }

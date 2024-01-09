@@ -26,7 +26,7 @@ const Login = () =>
     }
 
     return <form onSubmit={handleLogin}>
-    <div>
+    <div className="p-1">
       username
         <input
         id="username"
@@ -36,7 +36,7 @@ const Login = () =>
         onChange={({ target }) => setUsername(target.value)}
       />
     </div>
-    <div>
+    <div className="p-1">
       password
         <input
         id="password"
@@ -46,7 +46,7 @@ const Login = () =>
         onChange={({ target }) => setPassword(target.value)}
       />
     </div>
-    <button id='login-button' type="submit">login</button>
+    <button className='bg-sky-500 hover:bg-sky-700 rounded-full p-1 w-full' id='login-button' type="submit">login</button>
   </form>
 }
 
