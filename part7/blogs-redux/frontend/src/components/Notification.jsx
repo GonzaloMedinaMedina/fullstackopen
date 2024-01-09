@@ -8,8 +8,7 @@ const Notification = () =>
   if (notificationState.message === "" || notificationState.message === undefined || notificationState.message === null)
     return null;
 
-  const messageType = notificationState.success ? 'success' : 'error'
-  return <div className={messageType}>{notificationState.message}</div>
+  return <div className={"border-solid border-2 bg-slate-300 rounded p-2.5 mb-2.5 text-[20px] " + (notificationState.success ? "text-green-500 border-green-500" : "text-red-500 border-red-500")}>{notificationState.message}</div>
 }
 
 export default Notification;
