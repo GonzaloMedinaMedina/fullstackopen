@@ -1,4 +1,3 @@
-import './Notification.css'
 import { useSelector } from 'react-redux'
 
 const Notification = () =>
